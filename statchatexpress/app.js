@@ -48,7 +48,7 @@ app.get('/stats', async (req, res) => {
 });
 
 // Route to create a new post
-app.stats('/stats', async (req, res) => {
+app.post('/stats', async (req, res) => {
   try {
     const stats = await Stats.create(req.body);
 
