@@ -2,16 +2,16 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../database.js';
 
 export const User = sequelize.define('User', {
-  username: {
+  Username: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  email: {
+  Email: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
-  password: {
+  Password: {
     type: DataTypes.STRING,
     allowNull: false
   }
