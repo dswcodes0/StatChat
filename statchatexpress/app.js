@@ -65,7 +65,7 @@ app.post('/stats', async (req, res) => {
 
 sequelize.sync({ alter: true })
   .then(() => {
-    const port = 3000;
+    const port = 3002;
     app.listen(port, () => {
       console.log(`App is listening on port ${port}`);
     });
