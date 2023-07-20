@@ -45,4 +45,4 @@ const Landing = () => {
   );
 };
 
-export default SignedOutHome;
+export default Landing;

@@ -1,9 +1,16 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Landing from "../Landing/Landing";
+
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header"></header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
