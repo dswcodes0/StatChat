@@ -57,7 +57,6 @@ app.post("/users", async (req, res) => {
 });
 
 app.post("/users/login", async (req, res) => {
-  console.log(req.body);
   const { Username, Password } = req.body;
 
   try {
