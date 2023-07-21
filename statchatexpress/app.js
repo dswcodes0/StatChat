@@ -56,6 +56,28 @@ app.post("/users", async (req, res) => {
   }
 });
 
+app.post("/users/login", async (req, res) => {
+  console.log(req.body);
+  const { Username, Password } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { Username } });
+    console.log(user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.Password !== Password) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+
+    res.json({ message: "Login successful" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 sequelize
   .sync({ alter: true })
   .then(() => {

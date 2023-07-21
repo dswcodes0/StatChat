@@ -1,5 +1,6 @@
 import React from "react";
 import "./SignUp.css";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const handleSubmit = async (event) => {
@@ -53,6 +54,9 @@ const SignUp = () => {
         />
         <input type="submit" value="Submit" className="submit-btn" />
       </form>
+      <Link to="/SignIn" className="sign-in-redirect">
+        I Have An Account
+      </Link>
     </div>
   );
 };
