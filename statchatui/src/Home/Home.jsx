@@ -37,9 +37,9 @@ const Home = ({ onStatsChange, stats }) => {
         />
         <select name="platform" className="input-field">
           <option value="">Select Platform</option>
-          <option value="xbox">Xbox</option>
+          <option value="Xbox">Xbox</option>
           <option value="PC">PC</option>
-          <option value="playstation">PlayStation</option>
+          <option value="PS4">PlayStation</option>
         </select>
         <input type="submit" value="Submit" className="submit-btn" />
       </form>
