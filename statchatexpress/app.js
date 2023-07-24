@@ -49,15 +49,14 @@ app.get("/stats", async (req, res) => {
 
 app.post("/users", async (req, res) => {
   try {
-    const newStats = await User.create(req.body);
-    res.status(201).json(newStats);
+    const newUsers = await User.create(req.body);
+    res.status(201).json(newUsers);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
 app.post("/users/login", async (req, res) => {
-  console.log(req.body);
   const { Username, Password } = req.body;
 
   try {
