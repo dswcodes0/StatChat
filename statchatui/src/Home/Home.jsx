@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Stats from "../Stats/Stats";
 
-const Home = () => {
+const Home = ({ onStatsChange, stats }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const formData = {
       user: event.target.user.value,
       platform: event.target.platform.value,
@@ -17,8 +20,7 @@ const Home = () => {
         `${baseUrl}${apiKey}&player=${user}&platform=${platform}`
       );
       const data = await response.json();
-      console.log(data);
-      console.log(response);
+      onStatsChange(data);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -41,6 +43,7 @@ const Home = () => {
         </select>
         <input type="submit" value="Submit" className="submit-btn" />
       </form>
+      <Stats statData={stats} />
     </div>
   );
 };
