@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import Stats from "../Stats/Stats";
 
 const Home = ({ onStatsChange, stats }) => {
@@ -12,7 +11,7 @@ const Home = ({ onStatsChange, stats }) => {
     };
     const user = formData.user;
     const platform = formData.platform;
-    const apiKey = "230a240b28b946d0adfa08f3a7b6228c";
+    const apiKey = process.env.REACT_APP_API_KEY;
     const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
 
     try {

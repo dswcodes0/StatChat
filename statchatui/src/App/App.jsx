@@ -31,7 +31,6 @@ function App() {
               <Home onStatsChange={onStatsChange} stats={data.statData} />
             }
           />
-          <Route path="/Stats" element={<Stats statData={data.statData} />} />
         </Routes>
       </BrowserRouter>
     </div>
