@@ -40,7 +40,7 @@ const Landing = () => {
           </Link>
         </div>
       </div>
-      <landing className="footer"></landing>
+      <div className="footer"></div>
     </div>
   );
 };

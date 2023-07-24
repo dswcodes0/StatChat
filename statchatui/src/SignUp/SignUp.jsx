@@ -1,8 +1,9 @@
 import React from "react";
 import "./SignUp.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = {
@@ -21,7 +22,7 @@ const SignUp = () => {
 
       if (response.ok) {
         alert("Sign-up successful!");
-        //FIXME REDIRECT USER TO HOME WITH THE CREDENTIALS ENTERED
+        navigate("/SignIn");
       } else {
         const errorData = await response.json();
         alert(`Sign-up failed: ${errorData.message}`);

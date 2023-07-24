@@ -1,8 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./SignIn.css";
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = {
@@ -21,6 +22,7 @@ const SignIn = () => {
 
       const data = await response.json();
       if (response.ok) {
+        navigate("/Home");
         alert("login succesful");
       } else {
         alert(`Login failed: ${data.message}`);
