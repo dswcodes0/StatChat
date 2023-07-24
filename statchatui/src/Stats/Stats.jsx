@@ -3,7 +3,6 @@ import React from "react";
 const Stats = ({ statData }) => {
   let kills, level, name, rank;
   if (statData != null) {
-    console.log(statData);
     kills = statData.total.kills.value;
     level = statData.global.level;
     name = statData.global.name;
