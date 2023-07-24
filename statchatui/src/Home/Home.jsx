@@ -27,12 +27,12 @@ const Home = ({ onStatsChange, stats }) => {
   };
   return (
     <div className="container">
-      <h4>Enter your platform and epic username</h4>
+      <h4>Enter your platform and username</h4>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="user"
-          placeholder="Epic Username"
+          placeholder="Username"
           className="input-field"
         />
         <select name="platform" className="input-field">
