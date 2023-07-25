@@ -8,7 +8,12 @@ import session from "express-session";
 const app = express();
 const userSecret = process.env.SESSION_SECRET;
 const maximumAge = parseInt(process.env.SESSION_MAX_AGE);
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json()); // Middleware for parsing JSON bodies from HTTP requests
 app.use(morgan("combined"));
 app.use(
@@ -86,6 +91,26 @@ app.post("/users/login", async (req, res) => {
     console.log(req.session.userId);
 
     res.json({ message: "Login successful" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/users/profile", async (req, res) => {
+  try {
+    console.log(req.session.userId);
+    const { gamertag, platform } = req.body;
+    const userId = 4;
+    const user = await User.findByPk(userId);
+    if (user) {
+      user.Gamertag = gamertag;
+      user.Platform = platform;
+      await user.save();
+
+      res.json({ message: "Profile updated successfully" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
