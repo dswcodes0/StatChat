@@ -3,12 +3,25 @@ import cors from "cors";
 import morgan from "morgan";
 import { sequelize } from "./database.js";
 import { User, Stats } from "./models/index.js";
+import session from "express-session";
 
 const app = express();
-
+const userSecret = process.env.SESSION_SECRET;
+const maximumAge = parseInt(process.env.SESSION_MAX_AGE);
 app.use(cors());
 app.use(express.json()); // Middleware for parsing JSON bodies from HTTP requests
 app.use(morgan("combined"));
+app.use(
+  session({
+    secret: userSecret,
+    saveUninitialized: true,
+    resave: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: maximumAge,
+    },
+  })
+);
 
 // Route to get all users
 app.get("/users", async (req, res) => {
@@ -61,7 +74,6 @@ app.post("/users/login", async (req, res) => {
 
   try {
     const user = await User.findOne({ where: { Username } });
-    console.log(user);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -70,6 +82,8 @@ app.post("/users/login", async (req, res) => {
     if (user.Password !== Password) {
       return res.status(400).json({ message: "Incorrect password" });
     }
+    req.session.userId = user.dataValues.id;
+    console.log(req.session.userId);
 
     res.json({ message: "Login successful" });
   } catch (err) {
