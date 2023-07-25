@@ -16,4 +16,12 @@ export const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  Gamertag: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  Platform: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
