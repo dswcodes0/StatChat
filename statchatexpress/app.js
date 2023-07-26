@@ -22,7 +22,7 @@ app.use(
     saveUninitialized: true,
     resave: false,
     cookie: {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: maximumAge,
     },
   })
@@ -102,7 +102,7 @@ app.post("/users/profile", async (req, res) => {
   try {
     console.log("userprofileid:", req.session);
     const { gamertag, platform } = req.body;
-    const userId = 4;
+    const userId = req.session.userId;
     const user = await User.findByPk(userId);
 
     req.session.reload(() => {
