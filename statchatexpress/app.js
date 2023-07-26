@@ -54,6 +54,7 @@ app.get("/users/:id", async (req, res) => {
 
 // Route to get all stats, with associated users
 app.get("/stats", async (req, res) => {
+  console.log("stats req", req);
   try {
     const stats = await Stats.findAll({
       include: [{ model: User, as: "user" }],
@@ -88,9 +89,10 @@ app.post("/users/login", async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
     req.session.userId = user.dataValues.id;
-    console.log(req.session.userId);
-
-    res.json({ message: "Login successful" });
+    req.session.save(function () {
+      console.log("userid:", req.session);
+      res.json({ message: "Login successful" });
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -98,10 +100,14 @@ app.post("/users/login", async (req, res) => {
 
 app.post("/users/profile", async (req, res) => {
   try {
-    console.log(req.session.userId);
+    console.log("userprofileid:", req.session);
     const { gamertag, platform } = req.body;
     const userId = 4;
     const user = await User.findByPk(userId);
+
+    req.session.reload(() => {
+      console.log("repopulated", req.session);
+    });
     if (user) {
       user.Gamertag = gamertag;
       user.Platform = platform;
