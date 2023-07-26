@@ -20,7 +20,9 @@ app.use(
   session({
     secret: userSecret,
     saveUninitialized: true,
+    //this saveUninitialized line will save a session in the browser even if the user does not do anything like login
     resave: false,
+    //setting resave to false tells the server to check if anything has changed on the session before saving, this saves resources by not saving empty changes
     cookie: {
       httpOnly: false,
       maxAge: maximumAge,
@@ -54,7 +56,6 @@ app.get("/users/:id", async (req, res) => {
 
 // Route to get all stats, with associated users
 app.get("/stats", async (req, res) => {
-  console.log("stats req", req);
   try {
     const stats = await Stats.findAll({
       include: [{ model: User, as: "user" }],
@@ -90,7 +91,6 @@ app.post("/users/login", async (req, res) => {
     }
     req.session.userId = user.dataValues.id;
     req.session.save(function () {
-      console.log("userid:", req.session);
       res.json({ message: "Login successful" });
     });
   } catch (err) {
@@ -100,14 +100,9 @@ app.post("/users/login", async (req, res) => {
 
 app.post("/users/profile", async (req, res) => {
   try {
-    console.log("userprofileid:", req.session);
     const { gamertag, platform } = req.body;
     const userId = req.session.userId;
     const user = await User.findByPk(userId);
-
-    req.session.reload(() => {
-      console.log("repopulated", req.session);
-    });
     if (user) {
       user.Gamertag = gamertag;
       user.Platform = platform;

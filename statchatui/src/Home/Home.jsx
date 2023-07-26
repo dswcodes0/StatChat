@@ -18,6 +18,7 @@ const Home = ({ onStatsChange, stats }) => {
         },
         body: JSON.stringify(formData),
         credentials: "include",
+        //this includes any cookies or credentials the server might need to validate the user, without this, the user will not be identified in the post request and will not update the correct user in the database
       });
     } catch (error) {
       console.error("Error updating profile:", error);
