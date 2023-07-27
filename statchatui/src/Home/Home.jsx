@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import Stats from "../Stats/Stats";
 
 const Home = ({ onStatsChange, stats }) => {
+  const [errorMessage, setErrorMessage] = useState("");
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -34,7 +35,16 @@ const Home = ({ onStatsChange, stats }) => {
         `${baseUrl}${apiKey}&player=${gamertag}&platform=${platform}`
       );
       const data = await response.json();
-      onStatsChange(data);
+
+      if (data.error) {
+        setErrorMessage(data.error);
+        onStatsChange(null);
+      } else {
+        setErrorMessage("");
+        onStatsChange(data);
+      }
+      console.log(data);
+      console.log(data.error);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -56,8 +66,9 @@ const Home = ({ onStatsChange, stats }) => {
           <option value="PS4">PlayStation</option>
         </select>
         <input type="submit" value="Submit" className="submit-btn" />
+        {errorMessage && <p>{errorMessage}</p>}
       </form>
-      <Stats statData={stats} />
+      <Stats statData={stats} errorMessage={errorMessage} />
     </div>
   );
 };
