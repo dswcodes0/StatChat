@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { sequelize } from "./database.js";
-import { User, Stats } from "./models/index.js";
+import { User, Game, UserGame } from "./models/index.js";
 import session from "express-session";
 
 const app = express();

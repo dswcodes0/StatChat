@@ -1,7 +1,7 @@
 import { User } from "./user.js";
-import { Stats } from "./stats.js";
+import { Game } from "./game.js";
+import { UserGame } from "./userGame.js";
 
-User.hasMany(Stats, { as: "stats", foreignKey: "userId" });
-Stats.belongsTo(User, { as: "user", foreignKey: "userId" });
+User.belongsToMany(Game, { through: UserGame });
 
-export { User, Stats };
+export { User, Game, UserGame };

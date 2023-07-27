@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database.js";
+import { Game } from "./game.js";
+import { UserGame } from "./userGame.js";
 
 export const User = sequelize.define("User", {
   Username: {
@@ -25,3 +27,7 @@ export const User = sequelize.define("User", {
     allowNull: true,
   },
 });
+
+User.belongsToMany(Game, { through: UserGame });
+
+export default User;
