@@ -19,10 +19,10 @@ app.use(morgan("combined"));
 app.use(
   session({
     secret: userSecret,
-    saveUninitialized: true,
     //this saveUninitialized line will save a session in the browser even if the user does not do anything like login
-    resave: false,
+    saveUninitialized: true,
     //setting resave to false tells the server to check if anything has changed on the session before saving, this saves resources by not saving empty changes
+    resave: false,
     cookie: {
       httpOnly: false,
       maxAge: maximumAge,
@@ -98,38 +98,6 @@ app.post("/users/login", async (req, res) => {
   }
 });
 
-app.post("/users/profile", async (req, res) => {
-  try {
-    const { gamertag, platform, gameName } = req.body;
-    const userId = req.session.userId;
-
-    const user = await User.findByPk(userId);
-
-    if (user) {
-      let userGame = await UserGame.findOne({
-        where: { UserId: userId },
-      });
-
-      if (!userGame) {
-        userGame = await UserGame.create({
-          Gamertag: gamertag,
-          Platform: platform,
-          GameName: gameName,
-          UserId: userId,
-        });
-      } else {
-        userGame.Gamertag = gamertag;
-        await userGame.save();
-      }
-
-      res.json({ message: "Profile updated successfully" });
-    } else {
-      res.status(404).json({ message: "User not found" });
-    }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 sequelize
   .sync({ alter: true })
   .then(() => {
