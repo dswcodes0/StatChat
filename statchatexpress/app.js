@@ -98,6 +98,39 @@ app.post("/users/login", async (req, res) => {
   }
 });
 
+app.post("/users/profile", async (req, res) => {
+  try {
+    const { gamertag, platform, gameName } = req.body;
+    const userId = req.session.userId;
+
+    const user = await User.findByPk(userId);
+
+    if (user) {
+      let userGame = await UserGame.findOne({
+        where: { UserId: userId },
+      });
+
+      if (!userGame) {
+        userGame = await UserGame.create({
+          Gamertag: gamertag,
+          Platform: platform,
+          GameName: gameName,
+          UserId: userId,
+        });
+      } else {
+        userGame.Gamertag = gamertag;
+        await userGame.save();
+      }
+
+      res.json({ message: "Profile updated successfully" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 sequelize
   .sync({ alter: true })
   .then(() => {
