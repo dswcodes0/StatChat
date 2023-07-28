@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { sequelize } from "./database.js";
-import { User, Game, UserGame } from "./models/index.js";
+import { User, UserGame } from "./models/index.js";
 import session from "express-session";
 
 const app = express();
@@ -19,10 +19,10 @@ app.use(morgan("combined"));
 app.use(
   session({
     secret: userSecret,
-    saveUninitialized: true,
     //this saveUninitialized line will save a session in the browser even if the user does not do anything like login
-    resave: false,
+    saveUninitialized: true,
     //setting resave to false tells the server to check if anything has changed on the session before saving, this saves resources by not saving empty changes
+    resave: false,
     cookie: {
       httpOnly: false,
       maxAge: maximumAge,
@@ -93,25 +93,6 @@ app.post("/users/login", async (req, res) => {
     req.session.save(function () {
       res.json({ message: "Login successful" });
     });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-app.post("/users/profile", async (req, res) => {
-  try {
-    const { gamertag, platform } = req.body;
-    const userId = req.session.userId;
-    const user = await User.findByPk(userId);
-    if (user) {
-      user.Gamertag = gamertag;
-      user.Platform = platform;
-      await user.save();
-
-      res.json({ message: "Profile updated successfully" });
-    } else {
-      res.status(404).json({ message: "User not found" });
-    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

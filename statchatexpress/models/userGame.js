@@ -10,4 +10,15 @@ export const UserGame = sequelize.define("UserGame", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  GameName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: false,
+  },
+  indexes: [
+    {
+      unique: true,
+      fields: ["UserId", "GameName", "Platform"],
+    },
+  ],
 });

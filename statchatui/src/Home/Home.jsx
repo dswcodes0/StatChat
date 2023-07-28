@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Stats from "../Stats/Stats";
-
+const GAME_NAMES = {
+  APEX: "Apex",
+};
 const Home = ({ onStatsChange, stats }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const handleSubmit = async (event) => {
@@ -9,6 +11,7 @@ const Home = ({ onStatsChange, stats }) => {
     const formData = {
       gamertag: event.target.gamertag.value,
       platform: event.target.platform.value,
+      gameName: GAME_NAMES.APEX,
     };
 
     try {
