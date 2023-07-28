@@ -19,10 +19,10 @@ app.use(morgan("combined"));
 app.use(
   session({
     secret: userSecret,
-    //this saveUninitialized line will save a session in the browser even if the user does not do anything like login
     saveUninitialized: true,
-    //setting resave to false tells the server to check if anything has changed on the session before saving, this saves resources by not saving empty changes
+    //this saveUninitialized line will save a session in the browser even if the user does not do anything like login
     resave: false,
+    //setting resave to false tells the server to check if anything has changed on the session before saving, this saves resources by not saving empty changes
     cookie: {
       httpOnly: false,
       maxAge: maximumAge,
@@ -130,7 +130,6 @@ app.post("/users/profile", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
 sequelize
   .sync({ alter: true })
   .then(() => {
