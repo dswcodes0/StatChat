@@ -13,6 +13,6 @@ export const UserGame = sequelize.define("UserGame", {
   GameName: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: false,
+    unique: true,
   },
 });
