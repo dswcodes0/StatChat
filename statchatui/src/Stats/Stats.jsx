@@ -1,8 +1,8 @@
 import React from "react";
 
-const Stats = ({ statData, data }) => {
+const Stats = ({ statData }) => {
   if (!statData) {
-    return <div>{data || "Stats not yet fetched."}</div>;
+    return <div>{"Stats not yet fetched."}</div>;
   }
 
   let kills, level, name, rank;
