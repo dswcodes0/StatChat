@@ -1,21 +1,17 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database.js";
 
-export const User = sequelize.define("User", {
-  Username: {
+export const UserGame = sequelize.define("UserGame", {
+  Gamertag: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
   },
-  Email: {
+  Platform: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
   },
-  Password: {
+  GameName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
 });
-
-export default User;

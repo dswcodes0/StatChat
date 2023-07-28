@@ -1,22 +1,40 @@
 import React from "react";
 import Stats from "../Stats/Stats";
-
+const GAME_NAMES = {
+  APEX: "Apex",
+};
 const Home = ({ onStatsChange, stats }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const formData = {
-      user: event.target.user.value,
+      gamertag: event.target.gamertag.value,
       platform: event.target.platform.value,
+      gameName: GAME_NAMES.APEX,
     };
-    const user = formData.user;
+
+    try {
+      await fetch(`http://localhost:3002/users/profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include",
+        //this includes any cookies or credentials the server might need to validate the user, without this, the user will not be identified in the post request and will not update the correct user in the database
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+
+    const gamertag = formData.gamertag;
     const platform = formData.platform;
     const apiKey = process.env.REACT_APP_API_KEY;
     const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
 
     try {
       const response = await fetch(
-        `${baseUrl}${apiKey}&player=${user}&platform=${platform}`
+        `${baseUrl}${apiKey}&player=${gamertag}&platform=${platform}`
       );
       const data = await response.json();
       onStatsChange(data);
@@ -30,7 +48,7 @@ const Home = ({ onStatsChange, stats }) => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="user"
+          name="gamertag"
           placeholder="Username"
           className="input-field"
         />
