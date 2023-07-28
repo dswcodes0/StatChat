@@ -109,7 +109,7 @@ app.post("/users/profile", async (req, res) => {
       let userGame = await UserGame.findOne({
         where: { UserId: userId },
       });
-
+      console.log("LINE 111", userGame, userId);
       if (!userGame) {
         userGame = await UserGame.create({
           Gamertag: gamertag,
@@ -127,6 +127,7 @@ app.post("/users/profile", async (req, res) => {
       res.status(404).json({ message: "User not found" });
     }
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 });
