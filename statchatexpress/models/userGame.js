@@ -13,6 +13,12 @@ export const UserGame = sequelize.define("UserGame", {
   GameName: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    unique: false,
   },
+  indexes: [
+    {
+      unique: true,
+      fields: ["UserId", "GameName", "Platform"],
+    },
+  ],
 });
