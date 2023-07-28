@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { sequelize } from "./database.js";
-import { User, Game, UserGame } from "./models/index.js";
+import { User, UserGame } from "./models/index.js";
 import session from "express-session";
 
 const app = express();
@@ -100,13 +100,27 @@ app.post("/users/login", async (req, res) => {
 
 app.post("/users/profile", async (req, res) => {
   try {
-    const { gamertag, platform } = req.body;
+    const { gamertag, platform, gameName } = req.body;
     const userId = req.session.userId;
+
     const user = await User.findByPk(userId);
+
     if (user) {
-      user.Gamertag = gamertag;
-      user.Platform = platform;
-      await user.save();
+      let userGame = await UserGame.findOne({
+        where: { UserId: userId },
+      });
+
+      if (!userGame) {
+        userGame = await UserGame.create({
+          Gamertag: gamertag,
+          Platform: platform,
+          GameName: gameName,
+          UserId: userId,
+        });
+      } else {
+        userGame.Gamertag = gamertag;
+        await userGame.save();
+      }
 
       res.json({ message: "Profile updated successfully" });
     } else {
@@ -116,7 +130,6 @@ app.post("/users/profile", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
 sequelize
   .sync({ alter: true })
   .then(() => {

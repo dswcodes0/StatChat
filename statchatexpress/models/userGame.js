@@ -10,4 +10,9 @@ export const UserGame = sequelize.define("UserGame", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  GameName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
 });

@@ -1,6 +1,8 @@
 import React from "react";
 import Stats from "../Stats/Stats";
-
+const GAME_NAMES = {
+  APEX: "Apex",
+};
 const Home = ({ onStatsChange, stats }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -8,6 +10,7 @@ const Home = ({ onStatsChange, stats }) => {
     const formData = {
       gamertag: event.target.gamertag.value,
       platform: event.target.platform.value,
+      gameName: GAME_NAMES.APEX,
     };
 
     try {
