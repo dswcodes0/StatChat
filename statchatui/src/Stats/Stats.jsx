@@ -1,7 +1,6 @@
 import React from "react";
 
 const Stats = ({ statData, gameNames, formData }) => {
-  console.log(statData);
   if (!statData) {
     return <div>{"Stats not yet fetched."}</div>;
   }
@@ -34,7 +33,7 @@ const Stats = ({ statData, gameNames, formData }) => {
   return (
     <div className="container">
       <div>
-        <h1>Apex Legends</h1>
+        {formData.gameName && <h1>{formData.gameName}</h1>}
         <h2>Stats:</h2>
         {name && <h3>Name: {name}</h3>}
         {level && <h3>Level: {level}</h3>}

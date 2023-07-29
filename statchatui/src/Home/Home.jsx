@@ -13,10 +13,19 @@ const Home = ({ onStatsChange, stats }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const gamertag = event.target.gamertag.value;
+    const platform = event.target.platform.value;
+    let gameName = event.target.gameName.value;
+
+    if (gameName === GAME_NAMES.APEX && platform === "Xbox") {
+      gameName = "X1";
+      //i did this because the api requires the apex legends xbox field to be X1 instead of Xbox, but for r6, it needs to stay xbox
+    }
+
     const formData = {
-      gamertag: event.target.gamertag.value,
-      platform: event.target.platform.value,
-      gameName: event.target.gameName.value,
+      gamertag,
+      platform,
+      gameName,
     };
 
     try {
@@ -33,8 +42,6 @@ const Home = ({ onStatsChange, stats }) => {
       console.error("Error updating profile:", error);
     }
 
-    const gamertag = formData.gamertag;
-    const platform = formData.platform;
     const apiKey = process.env.REACT_APP_API_KEY;
     const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
 
