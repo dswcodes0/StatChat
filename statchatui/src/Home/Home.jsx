@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Stats from "../Stats/Stats";
 const GAME_NAMES = {
-  APEX: "Apex",
+  APEX: "Apex Legends",
+  R6: "Rainbow Six Siege",
 };
 const Home = ({ onStatsChange, stats }) => {
+  const [formData, setFormData] = useState({
+    gamertag: "",
+    platform: "",
+    gameName: "",
+  });
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     const formData = {
       gamertag: event.target.gamertag.value,
       platform: event.target.platform.value,
-      gameName: GAME_NAMES.APEX,
+      gameName: event.target.gameName.value,
     };
 
     try {
@@ -33,11 +39,19 @@ const Home = ({ onStatsChange, stats }) => {
     const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
 
     try {
-      const response = await fetch(
-        `${baseUrl}${apiKey}&player=${gamertag}&platform=${platform}`
-      );
+      let response;
+      if (formData.gameName === GAME_NAMES.APEX) {
+        response = await fetch(
+          `${baseUrl}${apiKey}&player=${gamertag}&platform=${platform}`
+        );
+      } else if (formData.gameName === GAME_NAMES.R6) {
+        response = await fetch(
+          `https://api.henrikdev.xyz/r6/v1/profile/${platform.toLowerCase()}/${gamertag}`
+        );
+      }
       const data = await response.json();
       onStatsChange(data);
+      setFormData(formData);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -58,9 +72,13 @@ const Home = ({ onStatsChange, stats }) => {
           <option value="PC">PC</option>
           <option value="PS4">PlayStation</option>
         </select>
+        <select name="gameName" className="input-field">
+          <option value={GAME_NAMES.APEX}>Apex Legends</option>
+          <option value={GAME_NAMES.R6}>Rainbow Six Siege</option>
+        </select>
         <input type="submit" value="Submit" className="submit-btn" />
       </form>
-      <Stats statData={stats} />
+      <Stats statData={stats} gameNames={GAME_NAMES} formData={formData} />
     </div>
   );
 };

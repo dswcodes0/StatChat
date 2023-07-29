@@ -1,18 +1,34 @@
 import React from "react";
 
-const Stats = ({ statData, errorMessage }) => {
+const Stats = ({ statData, gameNames, formData }) => {
+  console.log(statData);
   if (!statData) {
-    return <div>{errorMessage || "Stats not yet fetched."}</div>;
+    return <div>{"Stats not yet fetched."}</div>;
   }
-
   let kills, level, name, rank;
-  if (statData.total) {
-    kills = statData.total.kills.value;
+  if (statData.status === 404) {
+    return <div>Error: {statData.errors[0].message}</div>;
+    // this handles the error if the r6 username does not exist
   }
-  if (statData.global) {
-    level = statData.global.level;
-    name = statData.global.name;
-    rank = statData.global.rank.rankName;
+  if (statData.Error) {
+    return <div>Error: {statData.Error}</div>;
+  }
+  if (formData.gameName === gameNames.APEX) {
+    if (statData.total) {
+      kills = statData.total.kills.value;
+    }
+    if (statData.global) {
+      level = statData.global.level;
+      name = statData.global.name;
+      rank = statData.global.rank.rankName;
+    }
+  } else if (formData.gameName === gameNames.R6) {
+    if (statData.data) {
+      name = statData.data.metadata.user;
+      level = statData.data.metadata.level;
+      rank = statData.data.stats_general.rank.mmr;
+      kills = statData.data.stats_general.kills;
+    }
   }
 
   return (
