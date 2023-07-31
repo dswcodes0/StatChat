@@ -19,10 +19,10 @@ app.use(morgan("combined"));
 app.use(
   session({
     secret: userSecret,
-    saveUninitialized: true,
     //this saveUninitialized line will save a session in the browser even if the user does not do anything like login
-    resave: false,
+    saveUninitialized: true,
     //setting resave to false tells the server to check if anything has changed on the session before saving, this saves resources by not saving empty changes
+    resave: false,
     cookie: {
       httpOnly: false,
       maxAge: maximumAge,
@@ -109,7 +109,6 @@ app.post("/users/profile", async (req, res) => {
       let userGame = await UserGame.findOne({
         where: { UserId: userId },
       });
-      console.log("LINE 111", userGame, userId);
       if (!userGame) {
         userGame = await UserGame.create({
           Gamertag: gamertag,
