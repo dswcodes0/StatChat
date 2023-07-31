@@ -5,6 +5,7 @@ const GAME_NAMES = {
   R6: "Rainbow Six Siege",
 };
 const Home = ({ onStatsChange, stats }) => {
+  //FIXME initial state should store user's info from the database if it already exists
   const [formData, setFormData] = useState({
     gamertag: "",
     platform: "",
