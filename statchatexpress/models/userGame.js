@@ -15,15 +15,13 @@ export const UserGame = sequelize.define(
     GameName: {
       type: DataTypes.STRING,
       allowNull: false,
-      //user can only have one account per game:
-      unique: true,
     },
   },
   {
     indexes: [
       {
         unique: true,
-        fields: ["Gamertag", "GameName", "Platform"],
+        fields: ["UserId", "GameName", "Platform"],
       },
     ],
   }
