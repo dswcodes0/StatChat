@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Stats from "../Stats/Stats";
+import "./Home.css";
+
 const GAME_NAMES = {
   APEX: "Apex Legends",
   R6: "Rainbow Six Siege",
@@ -67,7 +69,7 @@ const Home = ({ onStatsChange, stats }) => {
     } catch (error) {
       console.error("Error submitting form:", error);
     }
-    setIsLoading(false); //sets the loading state back to false when the api is done showing
+    setIsLoading(false);
   };
   return (
     //FIXME make this more "react" style later
@@ -93,8 +95,8 @@ const Home = ({ onStatsChange, stats }) => {
         <input type="submit" value="Submit" className="submit-btn" />
       </form>
 
-      {isLoading ? ( //if is loading is true, it will display the loading, if it is false it will display the stats data
-        <div>Loading...</div>
+      {isLoading ? (
+        <div className="loader"></div>
       ) : (
         <Stats statData={stats} gameNames={GAME_NAMES} formData={formData} />
       )}
