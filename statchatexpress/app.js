@@ -109,7 +109,6 @@ app.post("/users/profile", async (req, res) => {
       let userGame = await UserGame.findOne({
         where: { UserId: userId },
       });
-      console.log("LINE 111", userGame, userId);
       if (!userGame) {
         userGame = await UserGame.create({
           Gamertag: gamertag,
