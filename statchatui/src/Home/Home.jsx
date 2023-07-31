@@ -17,9 +17,9 @@ const Home = ({ onStatsChange, stats }) => {
     const platform = event.target.platform.value;
     let gameName = event.target.gameName.value;
 
+    //i did this because the api requires the apex legends xbox field to be X1 instead of Xbox, but for r6, it needs to stay xbox
     if (gameName === GAME_NAMES.APEX && platform === "Xbox") {
       gameName = "X1";
-      //i did this because the api requires the apex legends xbox field to be X1 instead of Xbox, but for r6, it needs to stay xbox
     }
 
     const formData = {
@@ -64,6 +64,7 @@ const Home = ({ onStatsChange, stats }) => {
     }
   };
   return (
+    //FIXME make this more "react" style later
     <div className="container">
       <h4>Enter your platform and username</h4>
       <form onSubmit={handleSubmit}>
