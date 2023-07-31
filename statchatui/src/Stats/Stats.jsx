@@ -2,12 +2,12 @@ import React from "react";
 
 const Stats = ({ statData, gameNames, formData }) => {
   if (!statData) {
-    return <div>{"Stats not yet fetched."}</div>;
+    return <div>Stats not yet fetched.</div>;
   }
   let kills, level, name, rank;
   if (statData.status === 404) {
+    // this handles the error if the r6 username does not exist, the error message says user not found
     return <div>Error: {statData.errors[0].message}</div>;
-    // this handles the error if the r6 username does not exist
   }
   if (statData.Error) {
     return <div>Error: {statData.Error}</div>;
@@ -23,6 +23,7 @@ const Stats = ({ statData, gameNames, formData }) => {
     }
   } else if (formData.gameName === gameNames.R6) {
     if (statData.data) {
+      //low priority fixme, call the api on the server to make my codebase more managable and maintainable
       name = statData.data.metadata.user;
       level = statData.data.metadata.level;
       rank = statData.data.stats_general.rank.mmr;
