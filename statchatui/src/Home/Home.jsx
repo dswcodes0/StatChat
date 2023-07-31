@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Stats from "../Stats/Stats";
+import "./Home.css";
+
 const GAME_NAMES = {
   APEX: "Apex Legends",
   R6: "Rainbow Six Siege",
@@ -11,8 +13,12 @@ const Home = ({ onStatsChange, stats }) => {
     platform: "",
     gameName: "",
   });
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true); //sets the state to true before the api call is displaying the stats
 
     const gamertag = event.target.gamertag.value;
     const platform = event.target.platform.value;
@@ -63,6 +69,7 @@ const Home = ({ onStatsChange, stats }) => {
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+    setIsLoading(false);
   };
   return (
     //FIXME make this more "react" style later
@@ -87,7 +94,12 @@ const Home = ({ onStatsChange, stats }) => {
         </select>
         <input type="submit" value="Submit" className="submit-btn" />
       </form>
-      <Stats statData={stats} gameNames={GAME_NAMES} formData={formData} />
+
+      {isLoading ? (
+        <div className="loader"></div>
+      ) : (
+        <Stats statData={stats} gameNames={GAME_NAMES} formData={formData} />
+      )}
     </div>
   );
 };
