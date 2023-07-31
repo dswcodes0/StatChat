@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignIn.css";
 
 const SignIn = () => {
+  const [loginMessage, setLoginMessage] = useState("");
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,10 +24,13 @@ const SignIn = () => {
 
       const data = await response.json();
       if (response.ok) {
-        navigate("/Home");
-        alert("login succesful");
+        setLoginMessage("Login Succesful");
+        setTimeout(() => {
+          setLoginMessage("");
+          navigate("/Home");
+        }, 1500); // Redirect a user after 1.5 seconds in order to show the log in succesful part
       } else {
-        alert(`Login failed: ${data.message}`);
+        setLoginMessage(`Login failed:${data.message}`);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -51,6 +55,7 @@ const SignIn = () => {
         />
         <input type="submit" value="Submit" className="submit-btn" />
       </form>
+      {loginMessage && <div className="login-message">{loginMessage}</div>}
       <Link to="/SignUp" className="sign-in-redirect">
         Create An Account
       </Link>

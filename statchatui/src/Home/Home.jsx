@@ -49,14 +49,14 @@ const Home = ({ onStatsChange, stats }) => {
       console.error("Error updating profile:", error);
     }
 
-    const apiKey = process.env.REACT_APP_API_KEY;
+    const apexApiKey = process.env.REACT_APP_API_KEY;
     const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
 
     try {
       let response;
       if (formData.gameName === GAME_NAMES.APEX) {
         response = await fetch(
-          `${baseUrl}${apiKey}&player=${gamertag}&platform=${platform}`
+          `${baseUrl}${apexApiKey}&player=${gamertag}&platform=${platform}`
         );
       } else if (formData.gameName === GAME_NAMES.R6) {
         response = await fetch(
