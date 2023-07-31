@@ -5,7 +5,6 @@ import Landing from "../Landing/Landing";
 import SignUp from "../SignUp/SignUp";
 import SignIn from "../SignIn/SignIn";
 import Home from "../Home/Home";
-import Stats from "../Stats/Stats";
 import { appData } from "../Data/index";
 
 import "./App.css";
