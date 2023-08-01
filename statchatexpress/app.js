@@ -54,19 +54,6 @@ app.get("/users/:id", async (req, res) => {
   }
 });
 
-// Route to get all stats, with associated users
-app.get("/stats", async (req, res) => {
-  try {
-    const stats = await Stats.findAll({
-      include: [{ model: User, as: "user" }],
-      order: [["createdAt", "DESC"]],
-    });
-    res.json(stats);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 app.post("/users", async (req, res) => {
   try {
     const newUsers = await User.create(req.body);
