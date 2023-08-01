@@ -34,7 +34,6 @@ app.get("/users/check", (req, res) => {
   if (req.session.userId) {
     res.json({ isSignedIn: true });
   } else {
-    console.log(req.session.userId);
     res.json({ isSignedIn: false });
   }
 });
@@ -76,7 +75,6 @@ app.post("/users/login", async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
     req.session.userId = user.dataValues.id;
-    console.log(req.session.userId);
     req.session.save(function () {
       res.json({ message: "Login successful" });
     });
@@ -87,8 +85,6 @@ app.post("/users/login", async (req, res) => {
 
 app.post("/users/profile", async (req, res) => {
   try {
-    console.log(req.session.userId);
-
     const { gamertag, platform, gameName } = req.body;
     const userId = req.session.userId;
 

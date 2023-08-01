@@ -23,33 +23,6 @@ const Navbar = ({ isSignedIn }) => {
             <Link to="/SignUp">Sign Up</Link>
           </li>
         )}
-
-        {/* {isSignedIn ? (
-          <>
-            <li className="links">
-              <Link to="/">Landing</Link>
-            </li>
-            <li className="links">
-              <Link to="/Home">Home</Link>
-            </li>
-            <li className="links">Signout</li>
-          </>
-        ) : (
-          <>
-            <li className="links">
-              <Link to="/">Landing</Link>
-            </li>
-            <li className="links">
-              <Link to="/SignUp">Sign Up</Link>
-            </li>
-            <li className="links">
-              <Link to="/SignIn">Sign In</Link>
-            </li>
-            <li className="links">
-              <Link to="/Home">Home</Link>
-            </li>
-          </>
-        )} */}
       </ul>
     </nav>
   );
