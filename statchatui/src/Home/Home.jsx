@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Stats from "../Stats/Stats";
 import "./Home.css";
+import Navbar from "../Navbar/Navbar";
 
 const GAME_NAMES = {
   APEX: "Apex Legends",
@@ -74,6 +75,7 @@ const Home = ({ onStatsChange, stats }) => {
   return (
     //FIXME make this more "react" style later
     <div className="container">
+      <Navbar />
       <h4>Enter your platform and username</h4>
       <form onSubmit={handleSubmit}>
         <input
