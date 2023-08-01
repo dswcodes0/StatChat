@@ -103,6 +103,7 @@ app.post("/users/profile", async (req, res) => {
         });
       } else {
         userGame.Gamertag = gamertag;
+        userGame.Platform = platform;
         await userGame.save();
       }
 
