@@ -1,12 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Landing.css";
-import Navbar from "../Navbar/Navbar";
 
 const Landing = () => {
   return (
     <div className="landing-root">
-      <Navbar />
       <div className="landing-hero">
         <h1>StatChat</h1>
         <div className="features">
