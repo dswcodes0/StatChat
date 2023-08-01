@@ -5,16 +5,6 @@ import "./Landing.css";
 const Landing = () => {
   return (
     <div className="landing-root">
-      <nav className="landing-nav">
-        <ul>
-          <li>
-            <Link to="/SignIn">Sign In</Link>
-          </li>
-          <li>
-            <Link to="/SignUp">Sign Up</Link>
-          </li>
-        </ul>
-      </nav>
       <div className="landing-hero">
         <h1>StatChat</h1>
         <div className="features">

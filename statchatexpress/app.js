@@ -30,13 +30,11 @@ app.use(
   })
 );
 
-// Route to get all users
-app.get("/users", async (req, res) => {
-  try {
-    const users = await User.findAll();
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+app.get("/users/check", (req, res) => {
+  if (req.session.userId) {
+    res.json({ isSignedIn: true });
+  } else {
+    res.json({ isSignedIn: false });
   }
 });
 
@@ -49,19 +47,6 @@ app.get("/users/:id", async (req, res) => {
     } else {
       res.status(404).json({ message: "User not found" });
     }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Route to get all stats, with associated users
-app.get("/stats", async (req, res) => {
-  try {
-    const stats = await Stats.findAll({
-      include: [{ model: User, as: "user" }],
-      order: [["createdAt", "DESC"]],
-    });
-    res.json(stats);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

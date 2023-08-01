@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignIn.css";
 
-const SignIn = () => {
+const SignIn = ({ setIsSignedIn }) => {
   const [loginMessage, setLoginMessage] = useState("");
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
@@ -11,7 +11,6 @@ const SignIn = () => {
       Username: event.target.username.value,
       Password: event.target.password.value,
     };
-
     try {
       const response = await fetch("http://localhost:3002/users/login", {
         method: "POST",
@@ -27,6 +26,7 @@ const SignIn = () => {
         setLoginMessage("Login Succesful");
         setTimeout(() => {
           setLoginMessage("");
+          setIsSignedIn(true);
           navigate("/Home");
         }, 1500); // Redirect a user after 1.5 seconds in order to show the log in succesful part
       } else {
