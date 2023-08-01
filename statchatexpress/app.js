@@ -30,16 +30,6 @@ app.use(
   })
 );
 
-// Route to get all users
-app.get("/users", async (req, res) => {
-  try {
-    const users = await User.findAll();
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 // Route to get a user by id
 app.get("/users/:id", async (req, res) => {
   try {
