@@ -38,20 +38,6 @@ app.get("/users/check", (req, res) => {
   }
 });
 
-// Route to get a user by id
-app.get("/users/:id", async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id);
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ message: "User not found" });
-    }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 app.post("/users", async (req, res) => {
   try {
     const newUsers = await User.create(req.body);
