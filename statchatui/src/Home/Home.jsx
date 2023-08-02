@@ -25,7 +25,6 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
           }
         );
         const profileData = await profileResponse.json();
-        console.log(profileData);
         setFormData({
           gamertag: profileData.gamertag,
           platform: profileData.platform,
@@ -56,24 +55,30 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
       gameName = "X1";
     }
 
-    const formData = {
+    const formDataToSend = {
       gamertag,
       platform,
       gameName,
     };
+    const isProfileDataPresent =
+      formData.gamertag !== "" ||
+      formData.platform !== "" ||
+      formData.gameName !== "";
 
-    try {
-      await fetch(`http://localhost:3002/users/profile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: "include",
-        //this includes any cookies or credentials the server might need to validate the user, without this, the user will not be identified in the post request and will not update the correct user in the database
-      });
-    } catch (error) {
-      console.error("Error updating profile:", error);
+    if (!isProfileDataPresent) {
+      try {
+        await fetch(`http://localhost:3002/users/profile`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formDataToSend),
+          credentials: "include",
+          //this includes any cookies or credentials the server might need to validate the user, without this, the user will not be identified in the post request and will not update the correct user in the database
+        });
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
     }
 
     const apexApiKey = process.env.REACT_APP_API_KEY;
@@ -98,6 +103,7 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
     }
     setIsLoading(false);
   };
+  console.log(formData);
   return (
     //FIXME make this more "react" style later
     <div className="container">
