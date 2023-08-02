@@ -51,7 +51,11 @@ function App() {
           <Route
             path="/Home"
             element={
-              <Home onStatsChange={onStatsChange} stats={data.statData} />
+              <Home
+                onStatsChange={onStatsChange}
+                stats={data.statData}
+                isSignedIn={isSignedIn}
+              />
             }
           />
         </Routes>

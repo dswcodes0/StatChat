@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Stats from "../Stats/Stats";
 import "./Home.css";
 
@@ -6,13 +6,40 @@ const GAME_NAMES = {
   APEX: "Apex Legends",
   R6: "Rainbow Six Siege",
 };
-const Home = ({ onStatsChange, stats }) => {
+const Home = ({ onStatsChange, stats, isSignedIn }) => {
   //FIXME initial state should store user's info from the database if it already exists
   const [formData, setFormData] = useState({
     gamertag: "",
     platform: "",
     gameName: "",
   });
+
+  const getUserInfo = async () => {
+    try {
+      if (isSignedIn) {
+        const profileResponse = await fetch(
+          `http://localhost:3002/users/profile`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        const profileData = await profileResponse.json();
+        console.log(profileData);
+        setFormData({
+          gamertag: profileData.gamertag,
+          platform: profileData.platform,
+          gameName: profileData.gameName,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []); // calls getuserinfo when the page initiallly loads and only when it initially loads.
 
   const [isLoading, setIsLoading] = useState(false);
 

@@ -116,6 +116,36 @@ app.post("/users/profile", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+app.get("/users/profile", async (req, res) => {
+  try {
+    console.log(req.session.userId);
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const user = User.findByPk(userId);
+    if (user) {
+      const userGame = await UserGame.findOne({ where: { UserId: userId } });
+      if (userGame) {
+        res.json({
+          gamertag: userGame.Gamertag,
+          platform: userGame.Platform,
+          gameName: userGame.GameName,
+        });
+      } else {
+        res.status(404).json({ message: "No saved info found" });
+      }
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 sequelize
   .sync({ alter: true })
   .then(() => {
