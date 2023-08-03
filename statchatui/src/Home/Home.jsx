@@ -6,6 +6,38 @@ const GAME_NAMES = {
   APEX: "Apex Legends",
   R6: "Rainbow Six Siege",
 };
+async function fetchStats(formData) {
+  const apexApiKey = process.env.REACT_APP_API_KEY;
+  const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
+  if (
+    formData.gamertag === "" ||
+    formData.platform === "" ||
+    formData.gameName === ""
+  ) {
+    return null;
+  }
+  try {
+    let response;
+    if (formData.gameName === GAME_NAMES.APEX) {
+      response = await fetch(
+        `${baseUrl}${apexApiKey}&player=${formData.gamertag}&platform=${formData.platform}`
+      );
+    } else if (formData.gameName === GAME_NAMES.R6) {
+      response = await fetch(
+        `https://api.henrikdev.xyz/r6/v1/profile/${formData.platform.toLowerCase()}/${
+          formData.gamertag
+        }`
+      );
+    }
+    console.log(response);
+    const data = await response.json();
+    return data;
+    // onStatsChange(data);
+    // setFormData(formData);
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+}
 const Home = ({ onStatsChange, stats, isSignedIn }) => {
   //FIXME initial state should store user's info from the database if it already exists
   const [formData, setFormData] = useState({
@@ -25,11 +57,14 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
           }
         );
         const profileData = await profileResponse.json();
+        console.log(profileData);
         setFormData({
           gamertag: profileData.gamertag,
           platform: profileData.platform,
           gameName: profileData.gameName,
         });
+        const stats = await fetchStats(profileData);
+        onStatsChange(stats);
       }
     } catch (error) {
       console.error("Error fetching user info:", error);
@@ -38,7 +73,7 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
 
   useEffect(() => {
     getUserInfo();
-  }, []); // calls getuserinfo when the page initiallly loads and only when it initially loads.
+  }, [isSignedIn]); // calls getuserinfo when the page initiallly loads and only when it initially loads.
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,55 +90,31 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
       gameName = "X1";
     }
 
-    const formDataToSend = {
+    const formData = {
       gamertag,
       platform,
       gameName,
     };
-    const isProfileDataPresent =
-      formData.gamertag !== "" ||
-      formData.platform !== "" ||
-      formData.gameName !== "";
-
-    if (!isProfileDataPresent) {
-      try {
-        await fetch(`http://localhost:3002/users/profile`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formDataToSend),
-          credentials: "include",
-          //this includes any cookies or credentials the server might need to validate the user, without this, the user will not be identified in the post request and will not update the correct user in the database
-        });
-      } catch (error) {
-        console.error("Error updating profile:", error);
-      }
-    }
-
-    const apexApiKey = process.env.REACT_APP_API_KEY;
-    const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
 
     try {
-      let response;
-      if (formData.gameName === GAME_NAMES.APEX) {
-        response = await fetch(
-          `${baseUrl}${apexApiKey}&player=${gamertag}&platform=${platform}`
-        );
-      } else if (formData.gameName === GAME_NAMES.R6) {
-        response = await fetch(
-          `https://api.henrikdev.xyz/r6/v1/profile/${platform.toLowerCase()}/${gamertag}`
-        );
-      }
-      const data = await response.json();
-      onStatsChange(data);
-      setFormData(formData);
+      await fetch(`http://localhost:3002/users/profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        credentials: "include",
+        //this includes any cookies or credentials the server might need to validate the user, without this, the user will not be identified in the post request and will not update the correct user in the database
+      });
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error updating profile:", error);
     }
+
+    const stats = await fetchStats(formData);
+    setFormData(formData);
+    onStatsChange(stats);
     setIsLoading(false);
   };
-  console.log(formData);
   return (
     //FIXME make this more "react" style later
     <div className="container">
@@ -114,14 +125,23 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
           name="gamertag"
           placeholder="Username"
           className="input-field"
+          value={formData.gamertag}
         />
-        <select name="platform" className="input-field">
+        <select
+          name="platform"
+          className="input-field"
+          value={formData.platform}
+        >
           <option value="">Select Platform</option>
           <option value="Xbox">Xbox</option>
           <option value="PC">PC</option>
           <option value="PS4">PlayStation</option>
         </select>
-        <select name="gameName" className="input-field">
+        <select
+          name="gameName"
+          className="input-field"
+          value={formData.gameName}
+        >
           <option value={GAME_NAMES.APEX}>Apex Legends</option>
           <option value={GAME_NAMES.R6}>Rainbow Six Siege</option>
         </select>
