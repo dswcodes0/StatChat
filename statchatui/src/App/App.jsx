@@ -128,7 +128,12 @@ function App() {
           />
           <Route
             path="/Compare"
-            element={<Compare signedInUserData={signedInUserData} />}
+            element={
+              <Compare
+                fetchStats={fetchStats}
+                signedInUserData={signedInUserData}
+              />
+            }
           />
         </Routes>
       </BrowserRouter>
