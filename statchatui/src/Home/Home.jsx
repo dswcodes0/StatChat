@@ -29,17 +29,13 @@ async function fetchStats(formData) {
         }`
       );
     }
-    console.log(response);
     const data = await response.json();
     return data;
-    // onStatsChange(data);
-    // setFormData(formData);
   } catch (error) {
     console.error("Error submitting form:", error);
   }
 }
 const Home = ({ onStatsChange, stats, isSignedIn }) => {
-  //FIXME initial state should store user's info from the database if it already exists
   const [formData, setFormData] = useState({
     gamertag: "",
     platform: "",
@@ -57,7 +53,6 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
           }
         );
         const profileData = await profileResponse.json();
-        console.log(profileData);
         setFormData({
           gamertag: profileData.gamertag,
           platform: profileData.platform,
@@ -95,7 +90,6 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
       platform,
       gameName,
     };
-
     try {
       await fetch(`http://localhost:3002/users/profile`, {
         method: "POST",
@@ -115,12 +109,34 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
     onStatsChange(stats);
     setIsLoading(false);
   };
+  const onGamertagChange = (event) => {
+    const newGamertag = event.target.value;
+    setFormData({
+      ...formData,
+      gamertag: newGamertag,
+    });
+  };
+  const onPlatformChange = (event) => {
+    const newPlatform = event.target.value;
+    setFormData({
+      ...formData,
+      platform: newPlatform,
+    });
+  };
+  const onGameNameChange = (event) => {
+    const newGameName = event.target.value;
+    setFormData({
+      ...formData,
+      gameName: newGameName,
+    });
+  };
   return (
     //FIXME make this more "react" style later
     <div className="container">
       <h4>Enter your platform and username</h4>
       <form onSubmit={handleSubmit}>
         <input
+          onChange={onGamertagChange}
           type="text"
           name="gamertag"
           placeholder="Username"
@@ -128,6 +144,7 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
           value={formData.gamertag}
         />
         <select
+          onChange={onPlatformChange}
           name="platform"
           className="input-field"
           value={formData.platform}
@@ -138,6 +155,7 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
           <option value="PS4">PlayStation</option>
         </select>
         <select
+          onChange={onGameNameChange}
           name="gameName"
           className="input-field"
           value={formData.gameName}
