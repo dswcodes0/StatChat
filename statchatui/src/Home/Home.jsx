@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Stats from "../Stats/Stats";
 import "./Home.css";
 
@@ -6,69 +7,27 @@ const GAME_NAMES = {
   APEX: "Apex Legends",
   R6: "Rainbow Six Siege",
 };
-async function fetchStats(formData) {
-  const apexApiKey = process.env.REACT_APP_API_KEY;
-  const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
-  if (
-    formData.gamertag === "" ||
-    formData.platform === "" ||
-    formData.gameName === ""
-  ) {
-    return null;
-  }
-  try {
-    let response;
-    if (formData.gameName === GAME_NAMES.APEX) {
-      response = await fetch(
-        `${baseUrl}${apexApiKey}&player=${formData.gamertag}&platform=${formData.platform}`
-      );
-    } else if (formData.gameName === GAME_NAMES.R6) {
-      response = await fetch(
-        `https://api.henrikdev.xyz/r6/v1/profile/${formData.platform.toLowerCase()}/${
-          formData.gamertag
-        }`
-      );
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error submitting form:", error);
-  }
-}
-const Home = ({ onStatsChange, stats, isSignedIn }) => {
+
+const Home = ({
+  onStatsChange,
+  stats,
+  isSignedIn,
+  signedInUserData,
+  fetchStats,
+}) => {
   const [formData, setFormData] = useState({
     gamertag: "",
     platform: "",
     gameName: "",
   });
 
-  const getUserInfo = async () => {
-    try {
-      if (isSignedIn) {
-        const profileResponse = await fetch(
-          `http://localhost:3002/users/profile`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-        const profileData = await profileResponse.json();
-        setFormData({
-          gamertag: profileData.gamertag,
-          platform: profileData.platform,
-          gameName: profileData.gameName,
-        });
-        const stats = await fetchStats(profileData);
-        onStatsChange(stats);
-      }
-    } catch (error) {
-      console.error("Error fetching user info:", error);
-    }
-  };
-
   useEffect(() => {
-    getUserInfo();
-  }, []); // calls getuserinfo when the page initiallly loads and only when it initially loads.
+    setFormData({
+      gamertag: signedInUserData.gamertag,
+      platform: signedInUserData.platform,
+      gameName: signedInUserData.gameName,
+    });
+  }, [signedInUserData]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -171,6 +130,13 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
       ) : (
         <Stats statData={stats} gameNames={GAME_NAMES} formData={formData} />
       )}
+      <div className="compare">
+        {isSignedIn ? (
+          <Link to="/Compare">Compare your stats!</Link>
+        ) : (
+          <div className="loader">Sign in to compare your stats!</div>
+        )}
+      </div>
     </div>
   );
 };
