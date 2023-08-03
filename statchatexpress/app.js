@@ -38,20 +38,6 @@ app.get("/users/check", (req, res) => {
   }
 });
 
-// Route to get a user by id
-app.get("/users/:id", async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id);
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ message: "User not found" });
-    }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 app.post("/users", async (req, res) => {
   try {
     const newUsers = await User.create(req.body);
@@ -103,6 +89,8 @@ app.post("/users/profile", async (req, res) => {
         });
       } else {
         userGame.Gamertag = gamertag;
+        userGame.Platform = platform;
+        userGame.GameName = gameName;
         await userGame.save();
       }
 
@@ -115,6 +103,36 @@ app.post("/users/profile", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+app.get("/users/profile", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const user = User.findByPk(userId);
+    if (user) {
+      const userGame = await UserGame.findOne({ where: { UserId: userId } });
+      console.log(userGame);
+      if (userGame) {
+        res.json({
+          gamertag: userGame.Gamertag,
+          platform: userGame.Platform,
+          gameName: userGame.GameName,
+        });
+      } else {
+        res.status(404).json({ message: "No saved info found" });
+      }
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 sequelize
   .sync({ alter: true })
   .then(() => {
