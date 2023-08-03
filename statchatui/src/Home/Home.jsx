@@ -68,7 +68,7 @@ const Home = ({ onStatsChange, stats, isSignedIn }) => {
 
   useEffect(() => {
     getUserInfo();
-  }, [isSignedIn]); // calls getuserinfo when the page initiallly loads and only when it initially loads.
+  }, []); // calls getuserinfo when the page initiallly loads and only when it initially loads.
 
   const [isLoading, setIsLoading] = useState(false);
 
