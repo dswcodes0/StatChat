@@ -90,6 +90,7 @@ app.post("/users/profile", async (req, res) => {
       } else {
         userGame.Gamertag = gamertag;
         userGame.Platform = platform;
+        userGame.GameName = gameName;
         await userGame.save();
       }
 
@@ -105,7 +106,6 @@ app.post("/users/profile", async (req, res) => {
 
 app.get("/users/profile", async (req, res) => {
   try {
-    console.log(req.session.userId);
     const userId = req.session.userId;
 
     if (!userId) {
@@ -114,6 +114,7 @@ app.get("/users/profile", async (req, res) => {
     const user = User.findByPk(userId);
     if (user) {
       const userGame = await UserGame.findOne({ where: { UserId: userId } });
+      console.log(userGame);
       if (userGame) {
         res.json({
           gamertag: userGame.Gamertag,
