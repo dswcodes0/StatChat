@@ -23,10 +23,6 @@ function App() {
     platform: "",
     gameName: "",
   });
-  useEffect(() => {
-    //i set the signed in userdata to the local storage because when i refresh the compare component, it will be deleted unless i save it here
-    localStorage.setItem("signedInUserData", JSON.stringify(signedInUserData));
-  }, [signedInUserData]);
   async function fetchStats(formData) {
     const apexApiKey = process.env.REACT_APP_API_KEY;
     const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
@@ -105,7 +101,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar isSignedIn={isSignedIn} />
+        <Navbar isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/SignUp" element={<SignUp />} />
