@@ -111,19 +111,23 @@ const Compare = ({ signedInUserData, fetchStats }) => {
       {isLoading ? (
         <div className="loader"></div>
       ) : (
-        <div>
-          <Stats
-            statData={signedInUserStats}
-            gameNames={GAME_NAMES}
-            formData={signedInUserFormData}
-          />
-          {otherUserStats && (
+        <div className="stats-container">
+          <div className="stats">
             <Stats
-              statData={otherUserStats}
+              statData={signedInUserStats}
               gameNames={GAME_NAMES}
-              formData={otherUserFormData}
+              formData={signedInUserFormData}
             />
-          )}
+          </div>
+          <div className="stats">
+            {otherUserStats && (
+              <Stats
+                statData={otherUserStats}
+                gameNames={GAME_NAMES}
+                formData={otherUserFormData}
+              />
+            )}
+          </div>
         </div>
       )}
     </div>
