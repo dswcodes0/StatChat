@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Stats from "../Stats/Stats";
 import "./Compare.css";
+import StatsForm from "../StatsForm/StatsForm";
+import { GAME_NAMES } from "../Data/GameNames";
 
-const GAME_NAMES = {
-  APEX: "Apex Legends",
-  R6: "Rainbow Six Siege",
-};
 const Compare = ({ signedInUserData, fetchStats }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
     gamertag: "",
@@ -77,37 +75,13 @@ const Compare = ({ signedInUserData, fetchStats }) => {
         Hey {signedInUserData.gamertag}! enter a user to compare your stats
         with!
       </h4>
-      <form onSubmit={handleSubmit}>
-        <input
-          onChange={onGamertagChange}
-          type="text"
-          name="gamertag"
-          placeholder="Username"
-          className="input-field"
-          value={otherUserFormData.gamertag}
-        />
-        <select
-          onChange={onPlatformChange}
-          name="platform"
-          className="input-field"
-          value={otherUserFormData.platform}
-        >
-          <option value="">Select Platform</option>
-          <option value="Xbox">Xbox</option>
-          <option value="PC">PC</option>
-          <option value="PS4">PlayStation</option>
-        </select>
-        <select
-          onChange={onGameNameChange}
-          name="gameName"
-          className="input-field"
-          value={otherUserFormData.gameName}
-        >
-          <option value={GAME_NAMES.APEX}>Apex Legends</option>
-          <option value={GAME_NAMES.R6}>Rainbow Six Siege</option>
-        </select>
-        <input type="submit" value="Submit" className="submit-btn" />
-      </form>
+      <StatsForm
+        handleSubmit={handleSubmit}
+        formData={otherUserFormData}
+        onGamertagChange={onGamertagChange}
+        onPlatformChange={onPlatformChange}
+        onGameNameChange={onGameNameChange}
+      />
       {isLoading ? (
         <div className="loader"></div>
       ) : (
