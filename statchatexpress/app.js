@@ -69,6 +69,17 @@ app.post("/users/login", async (req, res) => {
   }
 });
 
+app.post("/users/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error while destroying session:", err);
+      return res.status(500).json({ message: "Failed to sign out" });
+    }
+    res.clearCookie("connect.sid");
+    res.json({ message: "Successfully signed out" });
+  });
+});
+
 app.post("/users/profile", async (req, res) => {
   try {
     const { gamertag, platform, gameName } = req.body;

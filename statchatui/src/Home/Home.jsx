@@ -2,11 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Stats from "../Stats/Stats";
 import "./Home.css";
-
-const GAME_NAMES = {
-  APEX: "Apex Legends",
-  R6: "Rainbow Six Siege",
-};
+import StatsForm from "../StatsForm/StatsForm";
+import { GAME_NAMES } from "../Data/GameNames";
 
 const Home = ({
   onStatsChange,
@@ -90,41 +87,15 @@ const Home = ({
     });
   };
   return (
-    //FIXME make this more "react" style later
     <div className="container">
       <h4>Enter your platform and username</h4>
-      <form onSubmit={handleSubmit}>
-        <input
-          onChange={onGamertagChange}
-          type="text"
-          name="gamertag"
-          placeholder="Username"
-          className="input-field"
-          value={formData.gamertag}
-        />
-        <select
-          onChange={onPlatformChange}
-          name="platform"
-          className="input-field"
-          value={formData.platform}
-        >
-          <option value="">Select Platform</option>
-          <option value="Xbox">Xbox</option>
-          <option value="PC">PC</option>
-          <option value="PS4">PlayStation</option>
-        </select>
-        <select
-          onChange={onGameNameChange}
-          name="gameName"
-          className="input-field"
-          value={formData.gameName}
-        >
-          <option value={GAME_NAMES.APEX}>Apex Legends</option>
-          <option value={GAME_NAMES.R6}>Rainbow Six Siege</option>
-        </select>
-        <input type="submit" value="Submit" className="submit-btn" />
-      </form>
-
+      <StatsForm
+        handleSubmit={handleSubmit}
+        onGamertagChange={onGamertagChange}
+        formData={formData}
+        onPlatformChange={onPlatformChange}
+        onGameNameChange={onGameNameChange}
+      />
       {isLoading ? (
         <div className="loader"></div>
       ) : (
