@@ -1,35 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import Stats from "../Stats/Stats";
-import "./Home.css";
+import "./Compare.css";
 
 const GAME_NAMES = {
   APEX: "Apex Legends",
   R6: "Rainbow Six Siege",
 };
-
-const Home = ({
-  onStatsChange,
-  stats,
-  isSignedIn,
-  signedInUserData,
-  fetchStats,
-}) => {
-  const [formData, setFormData] = useState({
+const Compare = ({ signedInUserData, fetchStats }) => {
+  const [signedInUserFormData, setSignedInUserFormData] = useState({
     gamertag: "",
     platform: "",
     gameName: "",
   });
 
-  useEffect(() => {
-    setFormData({
-      gamertag: signedInUserData.gamertag,
-      platform: signedInUserData.platform,
-      gameName: signedInUserData.gameName,
-    });
-  }, [signedInUserData]);
+  const [otherUserFormData, setOtherUserFormData] = useState({
+    gamertag: "",
+    platform: "",
+    gameName: "",
+  });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [otherUserStats, setOtherUserStats] = useState(null);
+  const [signedInUserStats, setSignedInUserStats] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,55 +36,47 @@ const Home = ({
       gameName = "X1";
     }
 
-    const formData = {
+    const submitData = {
       gamertag,
       platform,
       gameName,
     };
-    try {
-      await fetch(`http://localhost:3002/users/profile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: "include",
-        //this includes any cookies or credentials the server might need to validate the user, without this, the user will not be identified in the post request and will not update the correct user in the database
-      });
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
-
-    const stats = await fetchStats(formData);
-    setFormData(formData);
-    onStatsChange(stats);
+    const stats1 = await fetchStats(submitData);
+    const stats2 = await fetchStats(signedInUserData);
+    setOtherUserStats(stats1);
+    setSignedInUserStats(stats2);
+    setOtherUserFormData(submitData);
+    setSignedInUserFormData(signedInUserData);
     setIsLoading(false);
   };
+
   const onGamertagChange = (event) => {
     const newGamertag = event.target.value;
-    setFormData({
-      ...formData,
+    setOtherUserFormData({
+      ...otherUserFormData,
       gamertag: newGamertag,
     });
   };
   const onPlatformChange = (event) => {
     const newPlatform = event.target.value;
-    setFormData({
-      ...formData,
+    setOtherUserFormData({
+      ...otherUserFormData,
       platform: newPlatform,
     });
   };
   const onGameNameChange = (event) => {
     const newGameName = event.target.value;
-    setFormData({
-      ...formData,
+    setOtherUserFormData({
+      ...otherUserFormData,
       gameName: newGameName,
     });
   };
   return (
-    //FIXME make this more "react" style later
-    <div className="container">
-      <h4>Enter your platform and username</h4>
+    <div>
+      <h4>
+        Hey {signedInUserData.gamertag}! enter a user to compare your stats
+        with!
+      </h4>
       <form onSubmit={handleSubmit}>
         <input
           onChange={onGamertagChange}
@@ -100,13 +84,13 @@ const Home = ({
           name="gamertag"
           placeholder="Username"
           className="input-field"
-          value={formData.gamertag}
+          value={otherUserFormData.gamertag}
         />
         <select
           onChange={onPlatformChange}
           name="platform"
           className="input-field"
-          value={formData.platform}
+          value={otherUserFormData.platform}
         >
           <option value="">Select Platform</option>
           <option value="Xbox">Xbox</option>
@@ -117,27 +101,36 @@ const Home = ({
           onChange={onGameNameChange}
           name="gameName"
           className="input-field"
-          value={formData.gameName}
+          value={otherUserFormData.gameName}
         >
           <option value={GAME_NAMES.APEX}>Apex Legends</option>
           <option value={GAME_NAMES.R6}>Rainbow Six Siege</option>
         </select>
         <input type="submit" value="Submit" className="submit-btn" />
       </form>
-
       {isLoading ? (
         <div className="loader"></div>
       ) : (
-        <Stats statData={stats} gameNames={GAME_NAMES} formData={formData} />
+        <div className="stats-container">
+          <div className="stats">
+            <Stats
+              statData={signedInUserStats}
+              gameNames={GAME_NAMES}
+              formData={signedInUserFormData}
+            />
+          </div>
+          <div className="stats">
+            {otherUserStats && (
+              <Stats
+                statData={otherUserStats}
+                gameNames={GAME_NAMES}
+                formData={otherUserFormData}
+              />
+            )}
+          </div>
+        </div>
       )}
-      <div className="compare">
-        {isSignedIn ? (
-          <Link to="/Compare">Compare your stats!</Link>
-        ) : (
-          <div className="loader">Sign in to compare your stats!</div>
-        )}
-      </div>
     </div>
   );
 };
-export default Home;
+export default Compare;
