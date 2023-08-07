@@ -4,14 +4,9 @@ import Stats from "../Stats/Stats";
 import "./Home.css";
 import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
+import { fetchStats } from "../Services/api";
 
-const Home = ({
-  onStatsChange,
-  stats,
-  isSignedIn,
-  signedInUserData,
-  fetchStats,
-}) => {
+const Home = ({ onStatsChange, stats, isSignedIn, signedInUserData }) => {
   const [formData, setFormData] = useState({
     gamertag: "",
     platform: "",
