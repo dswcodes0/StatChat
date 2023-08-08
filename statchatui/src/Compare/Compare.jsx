@@ -21,6 +21,20 @@ const Compare = ({ signedInUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [otherUserStats, setOtherUserStats] = useState(null);
   const [signedInUserStats, setSignedInUserStats] = useState(null);
+  const [userQueue, setUserQueue] = useState([]);
+
+  //get the previously stored userqueue everytime the page mounts
+  useEffect(() => {
+    const storedUserQueue = localStorage.getItem("userQueue");
+    if (storedUserQueue) {
+      setUserQueue(JSON.parse(storedUserQueue));
+    }
+  }, []);
+
+  //everytime userqueue is updated, localstorage will be updated with the new value.
+  useEffect(() => {
+    localStorage.setItem("userQueue", JSON.stringify(userQueue));
+  }, [userQueue]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -47,6 +61,22 @@ const Compare = ({ signedInUserData }) => {
     setOtherUserFormData(submitData);
     setSignedInUserFormData(signedInUserData);
     setIsLoading(false);
+
+    //this is the userdata that will be used to populate the queue with previous users
+    const newUser = {
+      gamertag: submitData.gamertag,
+      platform: submitData.platform,
+      gameName: submitData.gameName,
+    };
+
+    setUserQueue((prevQueue) => {
+      const updatedQueue = [...prevQueue, newUser];
+      // if the queue size is over three, remove oldest user which is the first element of the array
+      if (updatedQueue.length > 3) {
+        updatedQueue.shift();
+      }
+      return updatedQueue;
+    });
   };
 
   const onGamertagChange = (event) => {
@@ -105,6 +135,7 @@ const Compare = ({ signedInUserData }) => {
           </div>
         </div>
       )}
+      <div className="user-queue"></div>
     </div>
   );
 };
