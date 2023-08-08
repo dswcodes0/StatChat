@@ -9,8 +9,7 @@ import Navbar from "../Navbar/Navbar";
 import Compare from "..//Compare//Compare";
 import { appData } from "../Data/index";
 import "./App.css";
-import { fetchInitialData } from "..//Services/fetchData";
-import { checkSignedIn } from "..//Services/checkSignedIn";
+import { fetchInitialData, checkSignedIn } from "..//Services/api";
 
 function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -21,8 +20,23 @@ function App() {
     gameName: "",
   });
 
+  const onStatsChange = (statData) => {
+    const newAppData = { ...data };
+    // update newData to have the stats api data
+    newAppData.statData = statData;
+    setData(newAppData);
+  };
+
   useEffect(() => {
-    fetchInitialData(isSignedIn, setSignedInUserData, onStatsChange);
+    async function fetchData() {
+      if (isSignedIn) {
+        const initialData = await fetchInitialData();
+        setSignedInUserData(initialData.profileData);
+        const stats = initialData.stats;
+        onStatsChange(stats);
+      }
+    }
+    fetchData();
   }, [isSignedIn]);
 
   useEffect(() => {
@@ -30,12 +44,6 @@ function App() {
     checkSignedIn(setIsSignedIn);
   }, []);
 
-  const onStatsChange = (statData) => {
-    const newAppData = { ...data };
-    // update newData to have the stats api data
-    newAppData.statData = statData;
-    setData(newAppData);
-  };
   return (
     <div className="App">
       <BrowserRouter>

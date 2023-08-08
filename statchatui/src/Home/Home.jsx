@@ -4,7 +4,7 @@ import Stats from "../Stats/Stats";
 import "./Home.css";
 import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
-import { fetchStats } from "../Services/api";
+import { fetchStats, postToDatabase } from "../Services/api";
 
 const Home = ({ onStatsChange, stats, isSignedIn, signedInUserData }) => {
   const [formData, setFormData] = useState({
@@ -41,19 +41,7 @@ const Home = ({ onStatsChange, stats, isSignedIn, signedInUserData }) => {
       platform,
       gameName,
     };
-    try {
-      await fetch(`http://localhost:3002/users/profile`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: "include",
-        //this includes any cookies or credentials the server might need to validate the user, without this, the user will not be identified in the post request and will not update the correct user in the database
-      });
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
+    postToDatabase(formData);
 
     const stats = await fetchStats(formData);
     setFormData(formData);
