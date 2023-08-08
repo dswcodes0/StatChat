@@ -1,5 +1,5 @@
 import { GAME_NAMES } from "../Data/GameNames";
-
+//formdata is the variable that will hold the user's gamertag, platform and gamename
 const fetchStats = async (formData) => {
   const apexApiKey = process.env.REACT_APP_API_KEY;
   const baseUrl = "https://api.mozambiquehe.re/bridge?auth=";
@@ -23,10 +23,15 @@ const fetchStats = async (formData) => {
         }`
       );
     }
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
     const data = await response.json();
     return data;
   } catch (error) {
     console.error("Error submitting form:", error);
+    throw error;
   }
 };
 

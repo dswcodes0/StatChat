@@ -9,7 +9,7 @@ import Navbar from "../Navbar/Navbar";
 import Compare from "..//Compare//Compare";
 import { appData } from "../Data/index";
 import "./App.css";
-import { fetchData } from "..//Services/fetchData";
+import { fetchInitialData } from "..//Services/fetchData";
 import { checkSignedIn } from "..//Services/checkSignedIn";
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
   });
 
   useEffect(() => {
-    fetchData(isSignedIn, setSignedInUserData, onStatsChange);
+    fetchInitialData(isSignedIn, setSignedInUserData, onStatsChange);
   }, [isSignedIn]);
 
   useEffect(() => {

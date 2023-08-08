@@ -1,6 +1,6 @@
 import { fetchStats } from "../Services/api";
 
-export async function fetchData(
+export async function fetchInitialData(
   isSignedIn,
   setSignedInUserData,
   onStatsChange
