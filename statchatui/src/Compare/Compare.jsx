@@ -5,6 +5,8 @@ import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
 import { fetchStats } from "../Services/api";
 
+const USER_QUEUE = "userQueue";
+
 const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
     gamertag: "",
@@ -21,18 +23,10 @@ const Compare = ({ signedInUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [otherUserStats, setOtherUserStats] = useState(null);
   const [signedInUserStats, setSignedInUserStats] = useState(null);
-  const [userQueue, setUserQueue] = useState([]);
-  const [showStats, setShowStats] = useState(null);
   const [error, setError] = useState(null);
-
-  const storedUserQueue = sessionStorage.getItem("userQueue");
-
-  //get the previously stored userqueue everytime the page mounts
-  useEffect(() => {
-    if (storedUserQueue) {
-      setUserQueue(JSON.parse(storedUserQueue));
-    }
-  }, []);
+  const [currentStatsIndex, setCurrentStatsIndex] = useState(null);
+  const storedUserQueue = sessionStorage.getItem(USER_QUEUE);
+  const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
 
   //everytime userqueue is updated, sessionStorage will be updated with the new value.
   useEffect(() => {
@@ -163,15 +157,17 @@ const Compare = ({ signedInUserData }) => {
           <div key={index} className="user-item">
             <h1
               className="previous-user"
-              onMouseOver={() => setShowStats(index)}
-              onMouseOut={() => setShowStats(null)}
+              onMouseOver={() => setCurrentStatsIndex(index)}
+              onMouseOut={() => setCurrentStatsIndex(null)}
               onClick={() => {
                 compareUsers(user, signedInUserData);
               }}
             >
               {user.gamertag}
             </h1>
-            <div className={`stats ${showStats == index ? "" : "hidden"}`}>
+            <div
+              className={`stats ${currentStatsIndex == index ? "" : "hidden"}`}
+            >
               {user.stats && (
                 <Stats
                   statData={user.stats}
