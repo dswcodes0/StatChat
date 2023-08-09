@@ -5,6 +5,8 @@ import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
 import { fetchStats } from "../Services/api";
 
+const USER_QUEUE = "userQueue";
+
 const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
     gamertag: "",
@@ -22,7 +24,7 @@ const Compare = ({ signedInUserData }) => {
   const [otherUserStats, setOtherUserStats] = useState(null);
   const [signedInUserStats, setSignedInUserStats] = useState(null);
   const [currentStatsIndex, setCurrentStatsIndex] = useState(null);
-  const storedUserQueue = sessionStorage.getItem("userQueue");
+  const storedUserQueue = sessionStorage.getItem(USER_QUEUE);
   const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
 
   //everytime userqueue is updated, sessionStorage will be updated with the new value.
