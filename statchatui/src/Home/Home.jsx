@@ -41,6 +41,7 @@ const Home = ({ onStatsChange, stats, isSignedIn, signedInUserData }) => {
       platform,
       gameName,
     };
+    //this line pushes the user's info to the database when they submit, updating the database with the newly entered info
     postToDatabase(formData);
 
     const stats = await fetchStats(formData);
