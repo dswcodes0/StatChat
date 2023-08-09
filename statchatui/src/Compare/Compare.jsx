@@ -37,11 +37,6 @@ const Compare = ({ signedInUserData }) => {
     sessionStorage.setItem("userQueue", JSON.stringify(userQueue));
   }, [userQueue]);
 
-  // const compareStats = async (userStats1, userStats2) => {
-  //   const stats1 = await fetchStats(userStats1);
-  //   const stats2 = await fetchStats(userStats2);
-  // };
-
   const compareUsers = async (user1, user2) => {
     setIsLoading(true); //sets the state to true before the api call is displaying the stats
     const stats1 = await fetchStats(user1);
