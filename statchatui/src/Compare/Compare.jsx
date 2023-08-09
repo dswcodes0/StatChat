@@ -3,8 +3,9 @@ import Stats from "../Stats/Stats";
 import "./Compare.css";
 import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
+import { fetchStats } from "../Services/api";
 
-const Compare = ({ signedInUserData, fetchStats }) => {
+const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
     gamertag: "",
     platform: "",
