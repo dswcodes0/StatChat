@@ -21,7 +21,7 @@ const Compare = ({ signedInUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [otherUserStats, setOtherUserStats] = useState(null);
   const [signedInUserStats, setSignedInUserStats] = useState(null);
-  const [showStats, setShowStats] = useState(null);
+  const [currentStatsIndex, setCurrentStatsIndex] = useState(null);
   const storedUserQueue = sessionStorage.getItem("userQueue");
   const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
 
@@ -141,15 +141,17 @@ const Compare = ({ signedInUserData }) => {
           <div key={index} className="user-item">
             <h1
               className="previous-user"
-              onMouseOver={() => setShowStats(index)}
-              onMouseOut={() => setShowStats(null)}
+              onMouseOver={() => setCurrentStatsIndex(index)}
+              onMouseOut={() => setCurrentStatsIndex(null)}
               onClick={() => {
                 compareUsers(user, signedInUserData);
               }}
             >
               {user.gamertag}
             </h1>
-            <div className={`stats ${showStats == index ? "" : "hidden"}`}>
+            <div
+              className={`stats ${currentStatsIndex == index ? "" : "hidden"}`}
+            >
               {user.stats && (
                 <Stats
                   statData={user.stats}
