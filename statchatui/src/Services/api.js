@@ -12,9 +12,10 @@ const fetchStats = async (formData) => {
   }
   try {
     let response;
-    // if (formData.gameName === GAME_NAMES.APEX && formData.platform === "Xbox") {
-    //   formData.gameName = "X1";
-    // }
+    //i did this because the api requires the apex legends xbox field to be X1 instead of Xbox, but for r6, it needs to stay xbox
+    if (formData.gameName === GAME_NAMES.APEX && formData.platform === "Xbox") {
+      formData.platform = "X1";
+    }
     if (formData.gameName === GAME_NAMES.APEX) {
       response = await fetch(
         `${baseUrl}${apexApiKey}&player=${formData.gamertag}&platform=${formData.platform}`

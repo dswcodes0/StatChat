@@ -81,11 +81,6 @@ const Compare = ({ signedInUserData }) => {
     let platform = event.target.platform.value;
     const gameName = event.target.gameName.value;
 
-    //i did this because the api requires the apex legends xbox field to be X1 instead of Xbox, but for r6, it needs to stay xbox
-    if (gameName === GAME_NAMES.APEX && platform === "Xbox") {
-      platform = "X1";
-    }
-
     const submitData = {
       gamertag,
       platform,
