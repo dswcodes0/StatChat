@@ -21,16 +21,9 @@ const Compare = ({ signedInUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [otherUserStats, setOtherUserStats] = useState(null);
   const [signedInUserStats, setSignedInUserStats] = useState(null);
-  const [userQueue, setUserQueue] = useState([]);
   const [showStats, setShowStats] = useState(null);
   const storedUserQueue = sessionStorage.getItem("userQueue");
-
-  //get the previously stored userqueue everytime the page mounts
-  useEffect(() => {
-    if (storedUserQueue) {
-      setUserQueue(JSON.parse(storedUserQueue));
-    }
-  }, []);
+  const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
 
   //everytime userqueue is updated, sessionStorage will be updated with the new value.
   useEffect(() => {
