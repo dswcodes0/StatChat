@@ -10,7 +10,7 @@ const Landing = () => {
         <div className="features">
           <div className="feature">
             <h3>Live Statistics</h3>
-            <p>Get live fortnite statistics!</p>
+            <p>Get live game statistics!</p>
           </div>
           <div className="feature">
             <h3>Chat</h3>
