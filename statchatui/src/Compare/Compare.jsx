@@ -142,6 +142,7 @@ const Compare = ({ signedInUserData }) => {
           </div>
         </div>
       )}
+      <h1>Previously Searched Users</h1>
       <div className="user-queue">
         {userQueue.map((user, index) => (
           <div key={index} className="user-item">
