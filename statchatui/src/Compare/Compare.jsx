@@ -5,6 +5,8 @@ import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
 import { fetchStats } from "../Services/api";
 
+const USER_QUEUE = "userQueue";
+
 const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
     gamertag: "",
@@ -21,10 +23,46 @@ const Compare = ({ signedInUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [otherUserStats, setOtherUserStats] = useState(null);
   const [signedInUserStats, setSignedInUserStats] = useState(null);
+  const [currentStatsIndex, setCurrentStatsIndex] = useState(null);
+  const storedUserQueue = sessionStorage.getItem(USER_QUEUE);
+  const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
+
+  //everytime userqueue is updated, sessionStorage will be updated with the new value.
+  useEffect(() => {
+    sessionStorage.setItem("userQueue", JSON.stringify(userQueue));
+  }, [userQueue]);
+
+  const compareUsers = async (user1, user2) => {
+    setIsLoading(true); //sets the state to true before the api call is displaying the stats
+    const stats1 = await fetchStats(user1);
+    const stats2 = await fetchStats(user2);
+
+    setOtherUserStats(stats1);
+    setSignedInUserStats(stats2);
+    setOtherUserFormData(user1);
+    setSignedInUserFormData(user2);
+
+    const newUser = {
+      gamertag: user1.gamertag,
+      platform: user1.platform,
+      gameName: user1.gameName,
+      // Assigned the newUser to have the stats of stats1 because otherUser and newUser are the same and I want the stats to be saved in the userQueue
+      stats: stats1,
+    };
+
+    setUserQueue((prevQueue) => {
+      const updatedQueue = [...prevQueue, newUser];
+      // if the queue size is over three, remove oldest user which is the first element of the array
+      if (updatedQueue.length > 3) {
+        updatedQueue.shift();
+      }
+      return updatedQueue;
+    });
+    setIsLoading(false);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsLoading(true); //sets the state to true before the api call is displaying the stats
 
     const gamertag = event.target.gamertag.value;
     const platform = event.target.platform.value;
@@ -40,13 +78,7 @@ const Compare = ({ signedInUserData }) => {
       platform,
       gameName,
     };
-    const stats1 = await fetchStats(submitData);
-    const stats2 = await fetchStats(signedInUserData);
-    setOtherUserStats(stats1);
-    setSignedInUserStats(stats2);
-    setOtherUserFormData(submitData);
-    setSignedInUserFormData(signedInUserData);
-    setIsLoading(false);
+    compareUsers(submitData, signedInUserData);
   };
 
   const onGamertagChange = (event) => {
@@ -105,6 +137,34 @@ const Compare = ({ signedInUserData }) => {
           </div>
         </div>
       )}
+      <h1>Previously Searched Users</h1>
+      <div className="user-queue">
+        {userQueue.map((user, index) => (
+          <div key={index} className="user-item">
+            <h1
+              className="previous-user"
+              onMouseOver={() => setCurrentStatsIndex(index)}
+              onMouseOut={() => setCurrentStatsIndex(null)}
+              onClick={() => {
+                compareUsers(user, signedInUserData);
+              }}
+            >
+              {user.gamertag}
+            </h1>
+            <div
+              className={`stats ${currentStatsIndex == index ? "" : "hidden"}`}
+            >
+              {user.stats && (
+                <Stats
+                  statData={user.stats}
+                  gameNames={GAME_NAMES}
+                  formData={user}
+                />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
