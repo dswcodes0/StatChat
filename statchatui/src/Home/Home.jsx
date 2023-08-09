@@ -22,18 +22,19 @@ const Home = ({ onStatsChange, stats, isSignedIn, signedInUserData }) => {
   }, [signedInUserData]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true); //sets the state to true before the api call is displaying the stats
 
     const gamertag = event.target.gamertag.value;
-    const platform = event.target.platform.value;
-    let gameName = event.target.gameName.value;
+    let platform = event.target.platform.value;
+    const gameName = event.target.gameName.value;
 
     //i did this because the api requires the apex legends xbox field to be X1 instead of Xbox, but for r6, it needs to stay xbox
     if (gameName === GAME_NAMES.APEX && platform === "Xbox") {
-      gameName = "X1";
+      platform = "X1";
     }
 
     const formData = {
@@ -43,10 +44,14 @@ const Home = ({ onStatsChange, stats, isSignedIn, signedInUserData }) => {
     };
     //this line pushes the user's info to the database when they submit, updating the database with the newly entered info
     postToDatabase(formData);
-
-    const stats = await fetchStats(formData);
-    setFormData(formData);
-    onStatsChange(stats);
+    let stats;
+    try {
+      stats = await fetchStats(formData);
+      setFormData(formData);
+      onStatsChange(stats);
+    } catch (error) {
+      setError(error?.message);
+    }
     setIsLoading(false);
   };
   const onGamertagChange = (event) => {
@@ -79,6 +84,7 @@ const Home = ({ onStatsChange, stats, isSignedIn, signedInUserData }) => {
         formData={formData}
         onPlatformChange={onPlatformChange}
         onGameNameChange={onGameNameChange}
+        error={error}
       />
       {isLoading ? (
         <div className="loader"></div>

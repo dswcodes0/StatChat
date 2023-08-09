@@ -1,14 +1,12 @@
 import { GAME_NAMES } from "../Data/GameNames";
 
-/**
- * props = { propA: 1, propB: 'foo' }
- */
 function StatsForm(props) {
   const handleSubmit = props.handleSubmit;
   const onGamertagChange = props.onGamertagChange;
   const formData = props.formData;
   const onPlatformChange = props.onPlatformChange;
   const onGameNameChange = props.onGameNameChange;
+  const error = props.error;
 
   return (
     <div>
@@ -42,6 +40,7 @@ function StatsForm(props) {
           <option value={GAME_NAMES.R6}>Rainbow Six Siege</option>
         </select>
         <input type="submit" value="Submit" className="submit-btn" />
+        <div className="error">{error}</div>
       </form>
     </div>
   );

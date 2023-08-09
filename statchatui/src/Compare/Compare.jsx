@@ -23,6 +23,8 @@ const Compare = ({ signedInUserData }) => {
   const [signedInUserStats, setSignedInUserStats] = useState(null);
   const [userQueue, setUserQueue] = useState([]);
   const [showStats, setShowStats] = useState(null);
+  const [error, setError] = useState(null);
+
   const storedUserQueue = sessionStorage.getItem("userQueue");
 
   //get the previously stored userqueue everytime the page mounts
@@ -39,8 +41,14 @@ const Compare = ({ signedInUserData }) => {
 
   const compareUsers = async (user1, user2) => {
     setIsLoading(true); //sets the state to true before the api call is displaying the stats
-    const stats1 = await fetchStats(user1);
-    const stats2 = await fetchStats(user2);
+    let stats1;
+    let stats2;
+    try {
+      stats1 = await fetchStats(user1);
+      stats2 = await fetchStats(user2);
+    } catch (error) {
+      setError(error?.message);
+    }
 
     setOtherUserStats(stats1);
     setSignedInUserStats(stats2);
@@ -70,12 +78,12 @@ const Compare = ({ signedInUserData }) => {
     event.preventDefault();
 
     const gamertag = event.target.gamertag.value;
-    const platform = event.target.platform.value;
-    let gameName = event.target.gameName.value;
+    let platform = event.target.platform.value;
+    const gameName = event.target.gameName.value;
 
     //i did this because the api requires the apex legends xbox field to be X1 instead of Xbox, but for r6, it needs to stay xbox
     if (gameName === GAME_NAMES.APEX && platform === "Xbox") {
-      gameName = "X1";
+      platform = "X1";
     }
 
     const submitData = {
@@ -119,6 +127,7 @@ const Compare = ({ signedInUserData }) => {
         onGamertagChange={onGamertagChange}
         onPlatformChange={onPlatformChange}
         onGameNameChange={onGameNameChange}
+        error={error}
       />
       {isLoading ? (
         <div className="loader"></div>

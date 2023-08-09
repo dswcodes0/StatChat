@@ -12,6 +12,9 @@ const fetchStats = async (formData) => {
   }
   try {
     let response;
+    // if (formData.gameName === GAME_NAMES.APEX && formData.platform === "Xbox") {
+    //   formData.gameName = "X1";
+    // }
     if (formData.gameName === GAME_NAMES.APEX) {
       response = await fetch(
         `${baseUrl}${apexApiKey}&player=${formData.gamertag}&platform=${formData.platform}`
@@ -22,15 +25,25 @@ const fetchStats = async (formData) => {
           formData.gamertag
         }`
       );
+    } else {
+      throw new Error("Enter valid game name. ", formData);
     }
     if (!response.ok) {
-      throw new Error(`API request failed with status: ${response.status}`);
+      // Handle specific cases of invalid username
+      if (response.status === 404) {
+        throw new Error("User not found. Please enter a valid username.");
+      } else if (response.status === 400) {
+        throw new Error("Bad request. Please provide valid input.");
+      } else {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
     console.error("Error submitting form:", error);
+
     throw error;
   }
 };
