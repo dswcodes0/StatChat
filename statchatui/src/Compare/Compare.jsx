@@ -22,20 +22,25 @@ const Compare = ({ signedInUserData }) => {
   const [otherUserStats, setOtherUserStats] = useState(null);
   const [signedInUserStats, setSignedInUserStats] = useState(null);
   const [userQueue, setUserQueue] = useState([]);
+  const [showStats, setShowStats] = useState(null);
+  const storedUserQueue = sessionStorage.getItem("userQueue");
 
   //get the previously stored userqueue everytime the page mounts
   useEffect(() => {
-    const storedUserQueue = localStorage.getItem("userQueue");
     if (storedUserQueue) {
       setUserQueue(JSON.parse(storedUserQueue));
     }
   }, []);
 
-  //everytime userqueue is updated, localstorage will be updated with the new value.
+  //everytime userqueue is updated, sessionStorage will be updated with the new value.
   useEffect(() => {
-    localStorage.setItem("userQueue", JSON.stringify(userQueue));
+    sessionStorage.setItem("userQueue", JSON.stringify(userQueue));
   }, [userQueue]);
 
+  // const compareStats = async (userStats1, userStats2) => {
+  //   const stats1 = await fetchStats(userStats1);
+  //   const stats2 = await fetchStats(userStats2);
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true); //sets the state to true before the api call is displaying the stats
@@ -67,6 +72,8 @@ const Compare = ({ signedInUserData }) => {
       gamertag: submitData.gamertag,
       platform: submitData.platform,
       gameName: submitData.gameName,
+      // Assigned the newUser to have the stats of stats1 because otherUser and newUser are the same and I want the stats to be saved in the userQueue
+      stats: stats1,
     };
 
     setUserQueue((prevQueue) => {
@@ -135,7 +142,28 @@ const Compare = ({ signedInUserData }) => {
           </div>
         </div>
       )}
-      <div className="user-queue"></div>
+      <div className="user-queue">
+        {userQueue.map((user, index) => (
+          <div key={index} className="user-item">
+            <h1
+              className="previous-user"
+              onMouseOver={() => setShowStats(index)}
+              onMouseOut={() => setShowStats(null)}
+            >
+              {user.gamertag}
+            </h1>
+            <div className={`stats ${showStats == index ? "" : "hidden"}`}>
+              {user.stats && (
+                <Stats
+                  statData={user.stats}
+                  gameNames={GAME_NAMES}
+                  formData={user}
+                />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
