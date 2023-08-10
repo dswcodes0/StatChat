@@ -41,37 +41,39 @@ const Compare = ({ signedInUserData }) => {
     try {
       stats1 = await fetchStats(user1);
       stats2 = await fetchStats(user2);
-      //if this code throws an error, it will not be added to the userqueue
-      setOtherUserStats(stats1);
-      setSignedInUserStats(stats2);
-      setOtherUserFormData(user1);
-      setSignedInUserFormData(user2);
-
-      const newUser = {
-        gamertag: user1.gamertag,
-        platform: user1.platform,
-        gameName: user1.gameName,
-        stats: stats1,
-      };
-
-      setUserQueue((prevQueue) => {
-        // removes the existing user with the gamertag, will add it at the front later
-        const updatedQueueWithoutUser = prevQueue.filter(
-          (user) => user.gamertag !== user1.gamertag
-        );
-
-        // adds the user to the front
-        const updatedQueue = [newUser, ...updatedQueueWithoutUser];
-
-        if (updatedQueue.length > USER_QUEUE_LENGTH) {
-          updatedQueue.pop();
-        }
-
-        return updatedQueue;
-      });
     } catch (error) {
       setError(error?.message);
+      setIsLoading(false);
+      return;
     }
+    //if this code throws an error, it will not be added to the userqueue
+    setOtherUserStats(stats1);
+    setSignedInUserStats(stats2);
+    setOtherUserFormData(user1);
+    setSignedInUserFormData(user2);
+
+    const newUser = {
+      gamertag: user1.gamertag,
+      platform: user1.platform,
+      gameName: user1.gameName,
+      stats: stats1,
+    };
+
+    setUserQueue((prevQueue) => {
+      // removes the existing user with the gamertag, will add it at the front later
+      const updatedQueueWithoutUser = prevQueue.filter(
+        (user) => user.gamertag !== user1.gamertag
+      );
+
+      // adds the user to the front
+      const updatedQueue = [newUser, ...updatedQueueWithoutUser];
+
+      if (updatedQueue.length > USER_QUEUE_LENGTH) {
+        updatedQueue.pop();
+      }
+
+      return updatedQueue;
+    });
 
     setIsLoading(false);
   };
