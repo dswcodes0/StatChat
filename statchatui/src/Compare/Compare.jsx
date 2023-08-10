@@ -6,6 +6,7 @@ import { GAME_NAMES } from "../Data/GameNames";
 import { fetchStats } from "../Services/api";
 
 const USER_QUEUE = "userQueue";
+const USER_QUEUE_LENGTH = 3;
 
 const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
@@ -62,7 +63,7 @@ const Compare = ({ signedInUserData }) => {
         // adds the user to the front
         const updatedQueue = [newUser, ...updatedQueueWithoutUser];
 
-        if (updatedQueue.length > 3) {
+        if (updatedQueue.length > USER_QUEUE_LENGTH) {
           updatedQueue.pop();
         }
 
