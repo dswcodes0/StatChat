@@ -37,43 +37,39 @@ const Compare = ({ signedInUserData }) => {
     setIsLoading(true); //sets the state to true before the api call is displaying the stats
     let stats1;
     let stats2;
-    let validUser = true;
     try {
       stats1 = await fetchStats(user1);
       stats2 = await fetchStats(user2);
-    } catch (error) {
-      setError(error?.message);
-      validUser = false;
-    }
-    //if there was an error fetching the stats( meaning that the user does not exist) then it will not be added to the user queue
-    if (validUser) {
+      //if this code throws an error, it will not be added to the userqueue
       setOtherUserStats(stats1);
       setSignedInUserStats(stats2);
       setOtherUserFormData(user1);
       setSignedInUserFormData(user2);
 
-      //checks if the user is in the userqueue already
-      const isUserInQueue = userQueue.some(
-        (user) => user.gamertag === user1.gamertag
-      );
-      if (!isUserInQueue) {
-        const newUser = {
-          gamertag: user1.gamertag,
-          platform: user1.platform,
-          gameName: user1.gameName,
-          // Assigned the newUser to have the stats of stats1 because otherUser and newUser are the same and I want the stats to be saved in the userQueue
-          stats: stats1,
-        };
+      const newUser = {
+        gamertag: user1.gamertag,
+        platform: user1.platform,
+        gameName: user1.gameName,
+        stats: stats1,
+      };
 
-        setUserQueue((prevQueue) => {
-          const updatedQueue = [...prevQueue, newUser];
-          // if the queue size is over three, remove oldest user which is the first element of the array
-          if (updatedQueue.length > 3) {
-            updatedQueue.shift();
-          }
-          return updatedQueue;
-        });
-      }
+      setUserQueue((prevQueue) => {
+        // removes the existing user with the gamertag, will add it at the front later
+        const updatedQueueWithoutUser = prevQueue.filter(
+          (user) => user.gamertag !== user1.gamertag
+        );
+
+        // adds the user to the front
+        const updatedQueue = [newUser, ...updatedQueueWithoutUser];
+
+        if (updatedQueue.length > 3) {
+          updatedQueue.pop();
+        }
+
+        return updatedQueue;
+      });
+    } catch (error) {
+      setError(error?.message);
     }
 
     setIsLoading(false);
