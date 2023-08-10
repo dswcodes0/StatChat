@@ -5,6 +5,9 @@ import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
 import { fetchStats } from "../Services/api";
 
+const USER_QUEUE = "userQueue";
+const USER_QUEUE_LENGTH = 3;
+
 const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
     gamertag: "",
@@ -21,18 +24,10 @@ const Compare = ({ signedInUserData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [otherUserStats, setOtherUserStats] = useState(null);
   const [signedInUserStats, setSignedInUserStats] = useState(null);
-  const [userQueue, setUserQueue] = useState([]);
-  const [showStats, setShowStats] = useState(null);
   const [error, setError] = useState(null);
-
-  const storedUserQueue = sessionStorage.getItem("userQueue");
-
-  //get the previously stored userqueue everytime the page mounts
-  useEffect(() => {
-    if (storedUserQueue) {
-      setUserQueue(JSON.parse(storedUserQueue));
-    }
-  }, []);
+  const [currentStatsIndex, setCurrentStatsIndex] = useState(null);
+  const storedUserQueue = sessionStorage.getItem(USER_QUEUE);
+  const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
 
   //everytime userqueue is updated, sessionStorage will be updated with the new value.
   useEffect(() => {
@@ -48,8 +43,10 @@ const Compare = ({ signedInUserData }) => {
       stats2 = await fetchStats(user2);
     } catch (error) {
       setError(error?.message);
+      setIsLoading(false);
+      return;
     }
-
+    //if this code throws an error, it will not be added to the userqueue
     setOtherUserStats(stats1);
     setSignedInUserStats(stats2);
     setOtherUserFormData(user1);
@@ -59,18 +56,25 @@ const Compare = ({ signedInUserData }) => {
       gamertag: user1.gamertag,
       platform: user1.platform,
       gameName: user1.gameName,
-      // Assigned the newUser to have the stats of stats1 because otherUser and newUser are the same and I want the stats to be saved in the userQueue
       stats: stats1,
     };
 
     setUserQueue((prevQueue) => {
-      const updatedQueue = [...prevQueue, newUser];
-      // if the queue size is over three, remove oldest user which is the first element of the array
-      if (updatedQueue.length > 3) {
-        updatedQueue.shift();
+      // removes the existing user with the gamertag, will add it at the front later
+      const updatedQueueWithoutUser = prevQueue.filter(
+        (user) => user.gamertag !== user1.gamertag
+      );
+
+      // adds the user to the front
+      const updatedQueue = [newUser, ...updatedQueueWithoutUser];
+
+      if (updatedQueue.length > USER_QUEUE_LENGTH) {
+        updatedQueue.pop();
       }
+
       return updatedQueue;
     });
+
     setIsLoading(false);
   };
 
@@ -152,15 +156,17 @@ const Compare = ({ signedInUserData }) => {
           <div key={index} className="user-item">
             <h1
               className="previous-user"
-              onMouseOver={() => setShowStats(index)}
-              onMouseOut={() => setShowStats(null)}
+              onMouseOver={() => setCurrentStatsIndex(index)}
+              onMouseOut={() => setCurrentStatsIndex(null)}
               onClick={() => {
                 compareUsers(user, signedInUserData);
               }}
             >
               {user.gamertag}
             </h1>
-            <div className={`stats ${showStats == index ? "" : "hidden"}`}>
+            <div
+              className={`stats ${currentStatsIndex == index ? "" : "hidden"}`}
+            >
               {user.stats && (
                 <Stats
                   statData={user.stats}
