@@ -191,15 +191,13 @@ const Compare = ({ signedInUserData }) => {
           </div>
         ))}
       </div>
+      <h1>Suggested Users</h1>
       <div className="user-queue">
-        <h1>Suggested Users</h1>
-        <div className="suggested-users">
-          {suggestedUsers.map((user, index) => (
-            <div key={index} className="suggested-user">
-              <h1>{user.gamertag}</h1>
-            </div>
-          ))}
-        </div>
+        {suggestedUsers.map((user, index) => (
+          <div key={index} className="user-item">
+            <h1>{user.gamertag}</h1>
+          </div>
+        ))}
       </div>
     </div>
   );
