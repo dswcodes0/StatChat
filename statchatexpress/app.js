@@ -220,8 +220,7 @@ app.get("/users/getTopSuggestedUsers", async (req, res) => {
     }, new Map());
 
     // sorts the entries based on their occurrence count in descending order
-    const sortedEntries = userCounts
-      .entries()
+    const sortedEntries = Array.from(userCounts.entries())
       //creates an array based on the key and value of every entry in userCounts
       .map(([key, value]) => [key, value])
       //sorts the values by comparing the values of each array and if b - a is positive then b should come first ex. 4 - 2 means b is greater than 2
@@ -237,6 +236,7 @@ app.get("/users/getTopSuggestedUsers", async (req, res) => {
     res.json(topSuggestedUsers);
   } catch (err) {
     console.error(err);
+    console.error(err.stack);
     res.status(500).json({ message: "Error retrieving top suggested users" });
   }
 });

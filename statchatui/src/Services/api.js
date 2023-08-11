@@ -163,6 +163,28 @@ async function deletePrevUser(prevUserId) {
   }
 }
 
+async function fetchSuggestedUsers() {
+  try {
+    const response = await fetch(
+      "http://localhost:3002/users/getTopSuggestedUsers",
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
+    const suggestedUsers = await response.json();
+    return suggestedUsers;
+  } catch (error) {
+    console.error("Error fetching suggested users:", error);
+    throw error;
+  }
+}
+
 export {
   fetchStats,
   fetchInitialData,
@@ -170,4 +192,5 @@ export {
   checkSignedIn,
   addToPrevUsers,
   deletePrevUser,
+  fetchSuggestedUsers,
 };

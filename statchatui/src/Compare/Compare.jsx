@@ -4,7 +4,11 @@ import "./Compare.css";
 import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
 import { UserQueue } from "../Data/UserQueue";
-import { fetchStats, addToPrevUsers } from "../Services/api";
+import {
+  fetchStats,
+  addToPrevUsers,
+  fetchSuggestedUsers,
+} from "../Services/api";
 
 const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
@@ -26,11 +30,22 @@ const Compare = ({ signedInUserData }) => {
   const [currentStatsIndex, setCurrentStatsIndex] = useState(null);
   const storedUserQueue = sessionStorage.getItem(UserQueue.USER_QUEUE);
   const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
 
   //everytime userqueue is updated, sessionStorage will be updated with the new value.
   useEffect(() => {
     sessionStorage.setItem("userQueue", JSON.stringify(userQueue));
   }, [userQueue]);
+
+  useEffect(() => {
+    fetchSuggestedUsers()
+      .then((data) => {
+        setSuggestedUsers(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching suggested users:", error);
+      });
+  }, []);
 
   const compareUsers = async (user1, user2) => {
     setIsLoading(true); //sets the state to true before the api call is displaying the stats
@@ -175,6 +190,16 @@ const Compare = ({ signedInUserData }) => {
             </div>
           </div>
         ))}
+      </div>
+      <div className="user-queue">
+        <h1>Suggested Users</h1>
+        <div className="suggested-users">
+          {suggestedUsers.map((user, index) => (
+            <div key={index} className="suggested-user">
+              <h1>{user.gamertag}</h1>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
