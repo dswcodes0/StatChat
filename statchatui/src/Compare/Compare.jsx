@@ -3,10 +3,12 @@ import Stats from "../Stats/Stats";
 import "./Compare.css";
 import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
-import { fetchStats } from "../Services/api";
-
-const USER_QUEUE = "userQueue";
-const USER_QUEUE_LENGTH = 3;
+import { UserQueue } from "../Data/UserQueue";
+import {
+  fetchStats,
+  addToPrevUsers,
+  fetchSuggestedUsers,
+} from "../Services/api";
 
 const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
@@ -26,13 +28,24 @@ const Compare = ({ signedInUserData }) => {
   const [signedInUserStats, setSignedInUserStats] = useState(null);
   const [error, setError] = useState(null);
   const [currentStatsIndex, setCurrentStatsIndex] = useState(null);
-  const storedUserQueue = sessionStorage.getItem(USER_QUEUE);
+  const storedUserQueue = sessionStorage.getItem(UserQueue.USER_QUEUE);
   const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
 
   //everytime userqueue is updated, sessionStorage will be updated with the new value.
   useEffect(() => {
     sessionStorage.setItem("userQueue", JSON.stringify(userQueue));
   }, [userQueue]);
+
+  useEffect(() => {
+    fetchSuggestedUsers()
+      .then((data) => {
+        setSuggestedUsers(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching suggested users:", error);
+      });
+  }, []);
 
   const compareUsers = async (user1, user2) => {
     setIsLoading(true); //sets the state to true before the api call is displaying the stats
@@ -68,13 +81,13 @@ const Compare = ({ signedInUserData }) => {
       // adds the user to the front
       const updatedQueue = [newUser, ...updatedQueueWithoutUser];
 
-      if (updatedQueue.length > USER_QUEUE_LENGTH) {
+      if (updatedQueue.length > UserQueue.USER_QUEUE_LENGTH) {
         updatedQueue.pop();
       }
 
       return updatedQueue;
     });
-
+    addToPrevUsers(user1);
     setIsLoading(false);
   };
 
@@ -175,6 +188,14 @@ const Compare = ({ signedInUserData }) => {
                 />
               )}
             </div>
+          </div>
+        ))}
+      </div>
+      <h1>Suggested Users</h1>
+      <div className="user-queue">
+        {suggestedUsers.map((user, index) => (
+          <div key={index} className="user-item">
+            <h1>{user.gamertag}</h1>
           </div>
         ))}
       </div>

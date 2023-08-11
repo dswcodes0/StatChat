@@ -1,4 +1,6 @@
 import { GAME_NAMES } from "../Data/GameNames";
+import { UserQueue } from "../Data/UserQueue";
+
 //formdata is the variable that will hold the user's gamertag, platform and gamename
 const fetchStats = async (formData) => {
   const apexApiKey = process.env.REACT_APP_API_KEY;
@@ -98,4 +100,97 @@ async function checkSignedIn(setIsSignedIn) {
   }
 }
 
-export { fetchStats, fetchInitialData, postToDatabase, checkSignedIn };
+async function addToPrevUsers(user) {
+  try {
+    const response = await fetch("http://localhost:3002/users/prevUser", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
+    console.log("PrevUser added successfully");
+    const updatedPrevUsersResponse = await fetch(
+      "http://localhost:3002/users/getPrevUsersById",
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    if (!updatedPrevUsersResponse.ok) {
+      throw new Error(
+        `API request failed with status: ${updatedPrevUsersResponse.status}`
+      );
+    }
+
+    const updatedPrevUsers = await updatedPrevUsersResponse.json();
+
+    // deletes the oldest user in prevusers if the length is longer than three
+    if (updatedPrevUsers.length > UserQueue.USER_QUEUE_LENGTH) {
+      //the first user in this list is the oldest
+      const oldestUser = updatedPrevUsers[0];
+      await deletePrevUser(oldestUser.id);
+    }
+  } catch (error) {
+    console.error("Error adding prevUser:", error);
+  }
+}
+
+async function deletePrevUser(prevUserId) {
+  try {
+    const response = await fetch(
+      `http://localhost:3002/users/prevUser/${prevUserId}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
+    console.log("PrevUser deleted successfully");
+  } catch (error) {
+    console.error("Error deleting prevUser:", error);
+  }
+}
+
+async function fetchSuggestedUsers() {
+  try {
+    const response = await fetch(
+      "http://localhost:3002/users/getTopSuggestedUsers",
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
+    const suggestedUsers = await response.json();
+    return suggestedUsers;
+  } catch (error) {
+    console.error("Error fetching suggested users:", error);
+    throw error;
+  }
+}
+
+export {
+  fetchStats,
+  fetchInitialData,
+  postToDatabase,
+  checkSignedIn,
+  addToPrevUsers,
+  deletePrevUser,
+  fetchSuggestedUsers,
+};
