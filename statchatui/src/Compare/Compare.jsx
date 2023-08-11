@@ -72,7 +72,7 @@ const Compare = ({ signedInUserData }) => {
 
       return updatedQueue;
     });
-
+    addToPrevUsers(user1);
     setIsLoading(false);
   };
 
@@ -158,7 +158,6 @@ const Compare = ({ signedInUserData }) => {
               onMouseOut={() => setCurrentStatsIndex(null)}
               onClick={() => {
                 compareUsers(user, signedInUserData);
-                addToPrevUsers(user);
               }}
             >
               {user.gamertag}
