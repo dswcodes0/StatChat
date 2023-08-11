@@ -5,6 +5,6 @@ import { UserGame } from "./userGame.js";
 User.hasMany(UserGame);
 User.hasMany(PrevUser);
 UserGame.belongsTo(User, { as: "user", foreignKey: "UserId" });
-PrevUser.belongsTo(User, { as: "prevUser", foreignKey: "prevUser" });
+PrevUser.belongsTo(User, { as: "associatedUser", foreignKey: "prevUser" });
 
 export { User, UserGame, PrevUser };

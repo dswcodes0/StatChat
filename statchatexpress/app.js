@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { sequelize } from "./database.js";
-import { User, UserGame } from "./models/index.js";
+import { User, UserGame, PrevUser } from "./models/index.js";
 import session from "express-session";
 
 const app = express();
@@ -125,7 +125,6 @@ app.get("/users/profile", async (req, res) => {
     const user = User.findByPk(userId);
     if (user) {
       const userGame = await UserGame.findOne({ where: { UserId: userId } });
-      console.log(userGame);
       if (userGame) {
         res.json({
           gamertag: userGame.Gamertag,
@@ -144,8 +143,29 @@ app.get("/users/profile", async (req, res) => {
   }
 });
 
-app.post("/users/prevUsers", async (req, res) => {
-  //FIXME add users to the prevusers data model
+app.post("/users/prevUser", async (req, res) => {
+  try {
+    const { gamertag, platform, gameName } = req.body;
+    const userId = req.session.userId;
+
+    const user = await User.findByPk(userId);
+
+    if (user) {
+      await PrevUser.create({
+        gamertag: gamertag,
+        platform: platform,
+        gameName: gameName,
+        UserId: userId,
+      });
+
+      res.json({ message: "PrevUser added successfully" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
 });
 
 sequelize

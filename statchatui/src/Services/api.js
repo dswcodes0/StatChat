@@ -98,4 +98,31 @@ async function checkSignedIn(setIsSignedIn) {
   }
 }
 
-export { fetchStats, fetchInitialData, postToDatabase, checkSignedIn };
+async function addToPrevUsers(user) {
+  try {
+    const response = await fetch("http://localhost:3002/users/prevUser", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status: ${response.status}`);
+    }
+
+    console.log("PrevUser added successfully");
+  } catch (error) {
+    console.error("Error adding prevUser:", error);
+  }
+}
+
+export {
+  fetchStats,
+  fetchInitialData,
+  postToDatabase,
+  checkSignedIn,
+  addToPrevUsers,
+};

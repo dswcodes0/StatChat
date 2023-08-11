@@ -3,7 +3,7 @@ import Stats from "../Stats/Stats";
 import "./Compare.css";
 import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
-import { fetchStats } from "../Services/api";
+import { fetchStats, addToPrevUsers } from "../Services/api";
 
 const USER_QUEUE = "userQueue";
 const USER_QUEUE_LENGTH = 3;
@@ -160,6 +160,7 @@ const Compare = ({ signedInUserData }) => {
               onMouseOut={() => setCurrentStatsIndex(null)}
               onClick={() => {
                 compareUsers(user, signedInUserData);
+                addToPrevUsers(user);
               }}
             >
               {user.gamertag}
