@@ -167,6 +167,45 @@ app.post("/users/prevUser", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+//gets a list of all the previous users sorted by the creation time in descending order
+app.get("/users/getPrevUsers", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const user = await User.findByPk(userId, {
+      include: { model: PrevUser },
+      //gets the first added prevuser by the time it was created
+      order: [[PrevUser, "createdAt", "ASC"]],
+    });
+
+    if (user) {
+      res.json(user.PrevUsers);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.delete("/users/prevUser/:prevUserId", async (req, res) => {
+  try {
+    const prevUserId = req.params.prevUserId;
+
+    const prevUser = await PrevUser.findByPk(prevUserId);
+
+    if (prevUser) {
+      await prevUser.destroy();
+      res.json({ message: "PrevUser deleted successfully" });
+    } else {
+      res.status(404).json({ message: "PrevUser not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
 
 sequelize
   .sync({ alter: true })

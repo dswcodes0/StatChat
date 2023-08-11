@@ -3,10 +3,8 @@ import Stats from "../Stats/Stats";
 import "./Compare.css";
 import StatsForm from "../StatsForm/StatsForm";
 import { GAME_NAMES } from "../Data/GameNames";
+import { UserQueue } from "../Data/UserQueue";
 import { fetchStats, addToPrevUsers } from "../Services/api";
-
-const USER_QUEUE = "userQueue";
-const USER_QUEUE_LENGTH = 3;
 
 const Compare = ({ signedInUserData }) => {
   const [signedInUserFormData, setSignedInUserFormData] = useState({
@@ -26,7 +24,7 @@ const Compare = ({ signedInUserData }) => {
   const [signedInUserStats, setSignedInUserStats] = useState(null);
   const [error, setError] = useState(null);
   const [currentStatsIndex, setCurrentStatsIndex] = useState(null);
-  const storedUserQueue = sessionStorage.getItem(USER_QUEUE);
+  const storedUserQueue = sessionStorage.getItem(UserQueue.USER_QUEUE);
   const [userQueue, setUserQueue] = useState(JSON.parse(storedUserQueue) || []);
 
   //everytime userqueue is updated, sessionStorage will be updated with the new value.
@@ -68,7 +66,7 @@ const Compare = ({ signedInUserData }) => {
       // adds the user to the front
       const updatedQueue = [newUser, ...updatedQueueWithoutUser];
 
-      if (updatedQueue.length > USER_QUEUE_LENGTH) {
+      if (updatedQueue.length > UserQueue.USER_QUEUE_LENGTH) {
         updatedQueue.pop();
       }
 
