@@ -168,7 +168,7 @@ app.post("/users/prevUser", async (req, res) => {
   }
 });
 //gets a list of all the previous users sorted by the creation time in descending order
-app.get("/users/getPrevUsers", async (req, res) => {
+app.get("/users/getPrevUsersById", async (req, res) => {
   try {
     const userId = req.session.userId;
 
@@ -186,6 +186,58 @@ app.get("/users/getPrevUsers", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/users/getAllPrevUsers", async (req, res) => {
+  try {
+    const allPrevUsers = await PrevUser.findAll({
+      // Gets the prevusers sorted by createdAt in ascending order
+      order: [["createdAt", "ASC"]],
+    });
+
+    res.json(allPrevUsers);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error retrieving prevusers" });
+  }
+});
+
+app.get("/users/getTopSuggestedUsers", async (req, res) => {
+  try {
+    const allPrevUsers = await PrevUser.findAll({
+      order: [["createdAt", "ASC"]],
+    });
+
+    // .reduce(countMap, prevUser) iterates over every value of prevuser and "reduces" it to countmap initially it is just new Map()
+    //but as it iterates through, it adds the keys and values until prevuser is empty
+    const userCounts = allPrevUsers.reduce((countMap, prevUser) => {
+      const key = `${prevUser.gamertag}-${prevUser.platform}-${prevUser.gameName}`;
+      //example key: Avid QQ-Xbox-Rainbow Six Siege;
+      //this creates a new key value pair and initalizes the value to 1 or increases the current value by 1
+      countMap.set(key, (countMap.get(key) || 0) + 1);
+      return countMap;
+    }, new Map());
+
+    // sorts the entries based on their occurrence count in descending order
+    const sortedEntries = userCounts
+      .entries()
+      //creates an array based on the key and value of every entry in userCounts
+      .map(([key, value]) => [key, value])
+      //sorts the values by comparing the values of each array and if b - a is positive then b should come first ex. 4 - 2 means b is greater than 2
+      .sort((a, b) => b[1] - a[1]);
+
+    // topsuggestedusers slices the top 3 entries of sorted entries which means they are the most frequently searched.
+    const topSuggestedUsers = sortedEntries.slice(0, 3).map(([key]) => {
+      const [gamertag, platform, gameName] = key.split("-");
+      //returns the gamertag, platform and gamename by splitting it by - which was the key's seperation.
+      return { gamertag, platform, gameName };
+    });
+
+    res.json(topSuggestedUsers);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error retrieving top suggested users" });
   }
 });
 

@@ -117,7 +117,7 @@ async function addToPrevUsers(user) {
 
     console.log("PrevUser added successfully");
     const updatedPrevUsersResponse = await fetch(
-      "http://localhost:3002/users/getPrevUsers",
+      "http://localhost:3002/users/getPrevUsersById",
       {
         method: "GET",
         credentials: "include",
