@@ -144,6 +144,10 @@ app.get("/users/profile", async (req, res) => {
   }
 });
 
+app.post("/users/prevUsers", async (req, res) => {
+  //FIXME add users to the prevusers data model
+});
+
 sequelize
   .sync({ alter: true })
   .then(() => {
